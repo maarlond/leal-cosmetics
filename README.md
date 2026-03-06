@@ -41,6 +41,15 @@ node server.js
 
 4. Abra o frontend no navegador
 
+
+## Melhorias futuras
+- Sistema de login
+- Edição de produtos (Ok)
+- Controle de vendas
+- Dashboard com relatórios
+- Integração com WhatsApp para pedidos
+
+
 ## Autor
 
 Marlon Dietrich
