@@ -40,3 +40,14 @@ th, td {
     border: 1px solid #ddd;
     text-align: center;
 }
+
+ .header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    #btnLogout {
+        display: flex;
+       margin-left: auto; 
+        /* Alinha o conteúdo à direita */
+    }

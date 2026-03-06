@@ -9,7 +9,7 @@ if (!token) {
 
 // Função para buscar o token e validar depois
 function getHeaders() {
-    
+
     return {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token
@@ -17,9 +17,21 @@ function getHeaders() {
 
 }
 
+document.getElementById("btnLogout").addEventListener("click", logout);
+
 function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
+    Swal.fire({
+        icon: "success",
+        title: "Você saiu!",
+        timer: 1000,
+        showConfirmButton: false,
+        didClose: () => {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+    });
+    //localStorage.removeItem("token");
+    //window.location.href = "login.html";
 }
 
 // 🔹 Buscar produtos

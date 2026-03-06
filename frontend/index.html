@@ -4,13 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Controle de Estoque 💄</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
 
+    <!-- Header com título e botão de logout -->
+    <header class="header">
+        <button id="btnLogout">Sair</button>
+    </header>
+
     <h1>Controle de Estoque 💄</h1>
-    <div id="formProduto" class="form-container"> 
+    <!-- Formulário de produto -->
+    <div id="formProduto" class="form-container">
         <input type="text" id="nome" placeholder="Nome do Produto">
         <input type="text" id="codigo" placeholder="Código do Produto">
 
@@ -20,16 +26,14 @@
         </select>
 
         <input type="number" id="quantidade" placeholder="Quantidade">
-
         <input type="number" id="preco_custo" placeholder="Preço de Custo" step="0.01">
-
         <input type="number" id="preco_venda" placeholder="Preço de Venda" step="0.01">
 
         <button onclick="adicionarProduto()">Adicionar</button>
     </div>
 
+    <!-- Tabela de produtos -->
     <h2>Produtos em Estoque</h2>
-
     <table>
         <thead>
             <tr>
@@ -47,8 +51,8 @@
         <tbody id="listaProdutos"></tbody>
     </table>
 
-    <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>

@@ -1,8 +1,7 @@
-const express = require("express");
+/*const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const path = require("path");
-
 // Criação de rota para login
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -130,4 +129,24 @@ app.post("/login", (req, res) => {
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
 });
+*/
 
+const express = require("express");
+const app = express();
+const cors = require("cors");
+
+app.use(cors());
+app.use(express.json());
+
+const authRouter = require("./routes/auth"); // caminho para o auth.js
+const produtosRouter = require("./routes/produtos");
+
+app.use("/", authRouter); // ou "/auth" se quiser prefixar
+app.use("/", produtosRouter);    // /produtos, /produtos/:id etc.
+
+// Todas as rotas de produtos
+//app.use("/", produtosRouter);
+
+app.listen(3000, () => {
+    console.log("Servidor rodando em http://localhost:3000");
+});
