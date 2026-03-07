@@ -156,7 +156,7 @@ if (div) {
 let tabela;
 $(document).ready(function () {
     tabela = $('#tabelaProdutos').DataTable({
-        pageLength: 20,
+        pageLength: 10,
         responsive: true,
         columnDefs: [
             { orderable: false, targets: 8 } // botão ação não é ordenável
