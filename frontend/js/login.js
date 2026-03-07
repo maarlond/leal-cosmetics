@@ -1,4 +1,4 @@
-const API_URL = "https://estoque-namorada.onrender.com";
+const API_URL = window.location.origin;
 
 async function login() {
 
