@@ -15,6 +15,60 @@ if (!token && pathAtual !== "/login.html" && pathAtual !== "/cadastro.html") {
     window.location.href = "login.html";
 }
 
+function validarCampos() {
+
+    let valido = true;
+
+    const nome = document.getElementById("nome");
+    const codigo = document.getElementById("codigo");
+    const quantidade = document.getElementById("quantidade");
+    const custo = document.getElementById("preco_custo");
+    const venda = document.getElementById("preco_venda");
+
+    const campos = [nome, codigo, quantidade, custo, venda];
+
+    // remove erro antigo
+    campos.forEach(c => c.classList.remove("campo-erro"));
+
+    if (!nome.value.trim()) {
+        nome.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!codigo.value.trim()) {
+        codigo.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!quantidade.value || quantidade.value <= 0) {
+        quantidade.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!custo.value || custo.value <= 0) {
+        custo.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!venda.value || venda.value <= 0) {
+        venda.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!valido) {
+
+        Swal.fire({
+            icon: "warning",
+            title: "Preencha os campos obrigatórios",
+            text: "Os campos em vermelho precisam ser corrigidos."
+        });
+
+        return false;
+    }
+
+    return true;
+}
+
 function toggleSenha() {
     const input = document.getElementById("senha");
     if (input.type === "password") {
@@ -186,6 +240,9 @@ async function editarProduto(produto) {
 }
 
 async function adicionarProduto() {
+
+    if (!validarCampos()) return;
+
     const nome = document.getElementById("nome").value;
     const codigo = document.getElementById("codigo").value;
     const marca = document.getElementById("marca").value;

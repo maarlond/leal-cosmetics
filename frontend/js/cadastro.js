@@ -7,6 +7,54 @@
 // Funções de validação
 // ===============================
 
+function validarCampos() {
+
+    let valido = true;
+
+    const nome = document.getElementById("nome");
+    //const codigo = document.getElementById("codigo");
+    const email = document.getElementById("email");
+    const senha = document.getElementById("senha");
+    const confirmaSenha = document.getElementById("confirmaSenha");
+
+    const campos = [nome, email, senha, confirmaSenha];
+
+    // remove erro antigo
+    campos.forEach(c => c.classList.remove("campo-erro"));
+
+    if (!nome.value.trim()) {
+        nome.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!email.value.trim()) {
+        email.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!senha.value) {
+        senha.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!confirmaSenha.value) {
+        confirmaSenha.classList.add("campo-erro");
+        valido = false;
+    }
+
+    if (!valido) {
+        Swal.fire({
+            icon: "warning",
+            title: "Preencha os campos obrigatórios",
+            text: "Os campos em vermelho precisam ser corrigidos."
+        });
+
+        return false;
+    }
+
+    return true;
+}
+
 // Valida email
 function validarEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,7 +67,10 @@ function validarSenha(senha) {
     return regex.test(senha);
 }
 
+
 async function cadastrarUsuario() {
+
+    if (!validarCampos()) return;
     const nome = document.getElementById("nome").value.trim();
     const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value.trim();

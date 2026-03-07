@@ -205,3 +205,8 @@ button {
 button:hover {
     transform: scale(1.05);
 }
+
+.campo-erro {
+    border: 2px solid #ff4d4f !important;
+    background-color: #fff0f0;
+}
