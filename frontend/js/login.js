@@ -1,3 +1,5 @@
+const API_URL = "https://estoque-namorada.onrender.com";
+
 async function login() {
 
     const email = document.getElementById("email").value;
@@ -13,7 +15,7 @@ async function login() {
         return;
     }
 
-    const resposta = await fetch("http://localhost:3000/login", {
+    const resposta = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

@@ -1,7 +1,8 @@
 // ------------------------------
 // PRODUTOS
 // ------------------------------
-const API_URL = "http://localhost:3000/produtos";
+//const API_URL = "http://localhost:3000/produtos";
+const API_URL = "https://estoque-namorada.onrender.com";
 let produtoEditando = null;
 
 // ------------------------------
@@ -14,12 +15,23 @@ const btnLogout = document.getElementById("btnLogout");
 if (!token && pathAtual !== "/login.html" && pathAtual !== "/cadastro.html") {
     window.location.href = "login.html";
 }
+
+function toggleSenha() {
+    const input = document.getElementById("senha");
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+
 // ------------------------------
 // LOGIN / LOGOUT
 // ------------------------------
 if (btnLogout) {
     btnLogout.addEventListener("click", logout);
 }
+
 
 async function logout() {
     const resultado = await Swal.fire({
@@ -245,7 +257,7 @@ async function adicionarProduto() {
 
         } else {
 
-            await fetch("http://localhost:3000/produtos", {
+            await fetch(`${API_URL}/usuarios`, {
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify({
