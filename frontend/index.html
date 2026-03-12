@@ -1,71 +1,196 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
+<!doctype html>
+<html lang="pt-BR" data-bs-theme="auto">
 <head>
-    <meta charset="UTF-8">
-    <title>Controle de Estoque 💄</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Controle de Estoque 💄</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./css/style.css">
+
+  <style>
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      background-color: #261B32;
+      color: white;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar .nav-link:hover {
+      background-color: #3c2948; /* cor ao passar o mouse */
+      border-radius: 6px;
+    }
+
+    .icon-logo {
+      height: 40px;
+      width: 40px;
+      border-radius: 30%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #e89c30;
+      margin-right: 0.75rem;
+    }
+
+    /* Main content */
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* Header */
+    .header img {
+      height: 2em;
+      vertical-align: text-bottom;
+    }
+
+    /* DataTable responsive */
+    table.dataTable {
+      width: 100% !important;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Header com título e botão de logout -->
-    <header class="header">
-        <button id="btnLogout" onclick="logout()">Sair</button>
+  <main class="d-flex flex-nowrap">
+    <!-- SIDEBAR -->
+    <div class="sidebar d-flex flex-column p-3">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none">
+        <div class="icon-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5 text-sidebar-primary-foreground">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
+            <path d="M20 3v4"></path>
+            <path d="M22 5h-4"></path>
+            <path d="M4 17v2"></path>
+            <path d="M5 18H3"></path>
+          </svg>
+        </div>
+        <span class="fs-6">Essência Perfumes</span>
+      </a>
 
-        <h1>Controle de Estoque <img src="https://img.icons8.com/?size=100&id=nNQ7qwnf9bqt&format=png&color=000000"
-                alt="" style="height: 2em; vertical-align: text-bottom;"></h1>
-    </header>
-
-    <!-- Formulário de produto -->
-    <div id=" formProduto" class="form-container">
-        <input type="text" id="nome" placeholder="Nome do Produto">
-        <input type="text" id="codigo" placeholder="Código do Produto">
-
-        <select id="marca">
-            <option value="Boticário">Boticário</option>
-            <option value="Eudora">Eudora</option>
-        </select>
-
-        <input type="number" id="quantidade" placeholder="Quantidade">
-        <input type="number" id="preco_custo" placeholder="Preço de Custo" step="0.01">
-        <input type="number" id="preco_venda" placeholder="Preço de Venda" step="0.01">
-
-        <button id="btnAdicionar" onclick="adicionarProduto()">Adicionar</button>
+      <hr>
+      <ul class="nav nav-pills flex-column mb-auto">
+       <li>
+        <a href="#" class="nav-link text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+              class="lucide lucide-layout-dashboard h-5 w-5 me-2">
+            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+          </svg>
+          Dashboard
+        </a>
+      </li>
+        <li>
+        <a href="#" onclick="carregarPagina('pages/produtos.html')" class="nav-link text-white">
+          <!-- Produtos -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package h-5 w-5 me-2">
+            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+            <path d="M12 22V12"></path>
+            <polyline points="3.29 7 12 12 20.71 7"></polyline>
+            <path d="m7.5 4.27 9 5.15"></path>
+          </svg>
+          Produtos
+        </a>
+      </li>
+        <li>
+        <a href="#" class="nav-link text-white">
+          <!-- Nova Venda -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart h-5 w-5 me-2">
+            <circle cx="8" cy="21" r="1"></circle>
+            <circle cx="19" cy="21" r="1"></circle>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+          </svg>
+          Nova Venda
+        </a>
+      <li>
+        <a href="#" class="nav-link text-white">
+          <!-- Relatórios -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column h-5 w-5 me-2">
+            <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+            <path d="M18 17V9"></path>
+            <path d="M13 17V5"></path>
+            <path d="M8 17v-3"></path>
+          </svg>
+          Relatórios
+        </a>
+      </li>
+      </ul>
+      <hr>
+      
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <strong id="emailUsuario"></strong>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+          <li><a class="dropdown-item" onclick="logout()" href="#">Sair</a></li>
+        </ul>
+      </div>
     </div>
 
-    <!-- Tabela de produtos -->
-    <h2>Produtos em Estoque</h2>
-    <div class="table-container">
-        <table id="tabelaProdutos" class="display nowrap" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Código</th>
-                    <th>Marca</th>
-                    <th>Quantidade</th>
-                    <th>Preço Custo</th>
-                    <th>Preço Venda</th>
-                    <th>Valor Total em Estoque</th>
-                    <th>Valor Total de lucro</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td colspan="6" style="font-weight: bold;">Totais:</td>
-                    <td style="text-align: center;" id="totalEstoque"></td>
-                    <td style="text-align: center;" id="totalLucro"></td>
-                </tr>
-            </tfoot>
-            <tbody id="listaProdutos"></tbody>
-        </table>
+    <!-- CONTEÚDO -->
+    <div class="main-content" id="content">
+      <!-- Aqui será carregado o conteúdo dinamicamente (, etc) -->
+       <main id="conteudoPrincipal">
+    <h2>Bem-vindo ao sistema!</h2>
+    <p>Escolha uma opção no menu à esquerda.</p>
+</main>
     </div>
+  </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="js/script.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery e DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Mostrar email do usuário logado
+    const email = localStorage.getItem("emailUsuario");
+    if(email){
+      document.getElementById("emailUsuario").textContent = email;
+    }
+
+    // Carregar página no content
+    function carregarPagina(pagina){
+      fetch(pagina)
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("content").innerHTML = html;
+        if(pagina.includes("produtos")){
+          iniciarTabelaProdutos();
+        }
+      });
+    }
+  </script>
+
+  <script src="js/script.js"></script>
+  <script src="js/produtos.js"></script>
+  <script>
+   function carregarPagina(pagina) {
+    $('#conteudoPrincipal').load(pagina, function() {
+        // Se a página tiver produtos, inicializa a tabela/form
+        if (typeof iniciarProdutos === "function") {
+            iniciarTabelaProdutos();
+        }
+    });
+  }
+  </script>
+  
 </body>
-
 </html>

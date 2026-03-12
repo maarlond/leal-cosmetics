@@ -54,6 +54,9 @@ async function login() {
         return;
     }
 
+    localStorage.setItem("logado", "true");
+    localStorage.setItem("emailUsuario", email);
+
     const resposta = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
@@ -67,7 +70,7 @@ async function login() {
     if (data.token) {
         localStorage.setItem("token", data.token);
 
-        window.location.href = "index.html";
+        window.location.href = "../index.html";
 
     } else {
 

@@ -1,0 +1,53 @@
+ <!-- Header com título e botão de logout -->
+    <header class="header">
+        <!--<button id="btnLogout" onclick="logout()">Sair</button>-->
+
+        <h1>Controle de Estoque <img src="https://img.icons8.com/?size=100&id=nNQ7qwnf9bqt&format=png&color=000000"
+                alt="" style="height: 2em; vertical-align: text-bottom;"></h1>
+    </header>
+
+    <!-- Formulário de produto -->
+     <form id="formProduto">
+        <div class="form-container">
+            <input type="text" id="nome" placeholder="Nome do Produto" required>
+            <input type="text" id="codigo" placeholder="Código do Produto" required> 
+
+            <select id="marca">
+                <option value="Boticário">Boticário</option>
+                <option value="Eudora">Eudora</option>
+            </select>
+
+            <input type="number" id="quantidade" placeholder="Quantidade" required>
+            <input type="number" id="preco_custo" placeholder="Preço de Custo" step="0.01" required>
+            <input type="number" id="preco_venda" placeholder="Preço de Venda" step="0.01" required>
+
+            <button id="btnAdicionar" type="submit">Adicionar</button>
+        </div>
+    </form>
+
+    <!-- Tabela de produtos -->
+    <div class="table-container">
+        <table id="tabelaProdutos" class="display nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Código</th>
+                    <th>Marca</th>
+                    <th>Quantidade</th>
+                    <th>Preço Custo</th>
+                    <th>Preço Venda</th>
+                    <th>Valor Total em Estoque</th>
+                    <th>Valor Total de lucro</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="font-weight: bold;">Totais:</td>
+                    <td style="text-align: center;" id="totalEstoque"></td>
+                    <td style="text-align: center;" id="totalLucro"></td>
+                </tr>
+            </tfoot>
+            <tbody id="listaProdutos"></tbody>
+        </table>
+    </div>

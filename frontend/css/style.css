@@ -1,16 +1,18 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 20px;
-    background: #000000;
+    /*padding: 20px;*/
+    background: #ffffff;
+    margin:0;
+    padding:0;
 }
 
 h1 {
-    color: white;
+    color: #212529(0, 0, 0);
     text-align: center;
 }
 
 h2 {
-    color: white;
+    color: #212529;
     text-align: center;
 }
 
@@ -142,7 +144,7 @@ td button:nth-child(2) {
 .dataTables_wrapper .dataTables_filter label,
 .dataTables_wrapper .dataTables_length label,
 .dataTables_wrapper .dataTables_info {
-    color: white;
+    color: rgb(0, 0, 0);
     /* "Pesquisar:" e "Mostrar X registros" */
 }
 
@@ -209,4 +211,26 @@ button:hover {
 .campo-erro {
     border: 2px solid #ff4d4f !important;
     background-color: #fff0f0;
+}
+
+.nav-link{
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover{
+    background-color: #2a2a2a;
+    color: #E89C30 !important;
+    padding-left: 12px;
+}
+
+.logo{
+background:#e89c30;
+border-radius:50%;
+box-shadow:0 6px 14px rgba(0,0,0,0.25);
+}
+
+.logo-sidebar{
+background:#e89c30;
+border-radius:50%;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }

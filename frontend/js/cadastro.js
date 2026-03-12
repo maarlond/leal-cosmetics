@@ -70,7 +70,7 @@ function validarSenha(senha) {
 
 async function cadastrarUsuario() {
 
-    if (!validarCampos()) return;
+    //if (!validarCampos()) return;
     const nome = document.getElementById("nome").value.trim();
     const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value.trim();
@@ -150,7 +150,7 @@ async function cadastrarUsuario() {
             text: "Você já pode fazer login agora.",
             confirmButtonText: "Ir para login"
         }).then(() => {
-            window.location.href = "login.html";
+            window.location.href = "../pages/login.html";
         });
 
     } catch (err) {
