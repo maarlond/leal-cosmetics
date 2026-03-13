@@ -1,31 +1,31 @@
 <!-- Header com título e botão de logout -->
 <header class="header">
     <!--<button id="btnLogout" onclick="logout()">Sair</button>
-    <h1>Controle de Estoque <img src="https://img.icons8.com/?size=100&id=nNQ7qwnf9bqt&format=png&color=000000" alt=""
-            style="height: 2em; vertical-align: text-bottom;"></h1>
-</header>
+        <h1>Controle de Estoque <img src="https://img.icons8.com/?size=100&id=nNQ7qwnf9bqt&format=png&color=000000" alt=""
+                style="height: 2em; vertical-align: text-bottom;"></h1>
+    </header>
 
--->
+    -->
 
     <!-- Formulário de produto -->
     <!--
-<form id="formProduto">
-    <div class="form-container">
-        <input type="text" id="nome" placeholder="Nome do Produto" required>
-        <input type="text" id="codigo" placeholder="Código do Produto" required>
+    <form id="formProduto">
+        <div class="form-container">
+            <input type="text" id="nome" placeholder="Nome do Produto" required>
+            <input type="text" id="codigo" placeholder="Código do Produto" required>
 
-        <select id="marca">
-            <option value="Boticário">Boticário</option>
-            <option value="Eudora">Eudora</option>
-        </select>
+            <select id="marca">
+                <option value="Boticário">Boticário</option>
+                <option value="Eudora">Eudora</option>
+            </select>
 
-        <input type="number" id="quantidade" placeholder="Quantidade" required>
-        <input type="number" id="preco_custo" placeholder="Preço de Custo" step="0.01" required>
-        <input type="number" id="preco_venda" placeholder="Preço de Venda" step="0.01" required>
+            <input type="number" id="quantidade" placeholder="Quantidade" required>
+            <input type="number" id="preco_custo" placeholder="Preço de Custo" step="0.01" required>
+            <input type="number" id="preco_venda" placeholder="Preço de Venda" step="0.01" required>
 
-        <button id="btnAdicionar" type="submit">Adicionar</button>
-    </div>
-</form>-->
+            <button id="btnAdicionar" type="submit">Adicionar</button>
+        </div>
+    </form>-->
 
     <div class="top-bar">
         <button class="btnNovo" onclick="abrirModalProduto()">
@@ -59,22 +59,15 @@
         </table>
 
         <div id="modalProduto" class="modal">
-
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h3>Novo Produto</h3>
                     <button class="btnFechar" onclick="fecharModalProduto()">✖</button>
                 </div>
-
-                <form id="formProduto">
-
+                <form id="formProduto" onsubmit="event.preventDefault(); adicionarProduto();">
                     <div class="form-grid">
-
                         <input type="text" id="nome" placeholder="Nome do Produto" required>
-
                         <input type="text" id="codigo" placeholder="Código do Produto">
-
                         <select id="marca">
                             <option value="Boticário">Boticário</option>
                             <option value="Eudora">Eudora</option>
@@ -87,7 +80,6 @@
                         <input type="number" id="preco_venda" placeholder="Preço de Venda" step="0.01">
 
                     </div>
-
                     <!-- Upload imagem -->
                     <div class="upload-imagem">
 
@@ -108,12 +100,8 @@
                         <button type="submit" class="btnSalvar">
                             Salvar Produto
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
     </div>

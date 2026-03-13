@@ -1,156 +1,10 @@
+/* ---------- BODY ---------- */
+
 body {
     font-family: Arial, sans-serif;
-    /*padding: 20px;*/
-    background: #ffffff;
+    background: linear-gradient(135deg, #fff1f5, #ffe4ec);
     margin: 0;
     padding: 0;
-}
-
-h1 {
-    color: #212529(0, 0, 0);
-    text-align: center;
-}
-
-h2 {
-    color: #212529;
-    text-align: center;
-}
-
-.form-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-input,
-select,
-button {
-    padding: 8px;
-}
-
-button {
-    background: #e91e63;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #c2185b;
-}
-
-/* Estilo moderno da tabela */
-
-/* espaço entre formulário e tabela */
-.form-container {
-    margin-bottom: 20px;
-}
-
-/* container da tabela */
-.table-container {
-    background: #0f172a;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    margin-top: 10px;
-}
-
-/* tabela */
-#tabelaProdutos {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    color: #e5e7eb;
-}
-
-/* cabeçalho */
-#tabelaProdutos thead {
-    background: #1e293b;
-}
-
-#tabelaProdutos thead th {
-    padding: 14px;
-    font-weight: 600;
-    border-bottom: 1px solid #334155;
-}
-
-/* linhas */
-#tabelaProdutos tbody tr {
-    background: #111827;
-    transition: 0.2s;
-}
-
-#tabelaProdutos tbody tr:nth-child(even) {
-    background: #0f172a;
-}
-
-#tabelaProdutos tbody tr:hover {
-    background: #1f2937;
-}
-
-/* células */
-#tabelaProdutos td {
-    padding: 12px;
-}
-
-/* footer totais */
-#tabelaProdutos tfoot {
-    background: #1e293b;
-    font-weight: 600;
-}
-
-#tabelaProdutos tfoot td {
-    padding: 14px;
-}
-
-/* controles datatable */
-.dataTables_wrapper {
-    margin-top: 10px;
-}
-
-.dataTables_filter input {
-    background: #020617;
-    border: 1px solid #334155;
-    color: white;
-    border-radius: 6px;
-    padding: 4px 8px;
-}
-
-.dataTables_length select {
-    background: #020617;
-    border: 1px solid #334155;
-    color: white;
-    border-radius: 6px;
-}
-
-/* botões */
-.btnEditar {
-    background: #f59e0b;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    color: white;
-}
-
-.btnRemover {
-    background: #ef4444;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    color: white;
-}
-
-#tabelaProdutos td:nth-child(2),
-#tabelaProdutos td:nth-child(3),
-#tabelaProdutos td:nth-child(4),
-#tabelaProdutos td:nth-child(5),
-#tabelaProdutos td:nth-child(6),
-#tabelaProdutos td:nth-child(7),
-#tabelaProdutos td:nth-child(8) {
-    text-align: center;
-}
-
-body {
     animation: fadeIn 0.4s ease;
 }
 
@@ -166,64 +20,217 @@ body {
     }
 }
 
+/* ---------- TITULOS ---------- */
+
+h1,
+h2 {
+    color: #374151;
+    text-align: center;
+}
+
+/* ---------- BOTÕES ---------- */
+
 button {
-    transition: all 0.2s ease;
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all .2s ease;
 }
 
 button:hover {
     transform: scale(1.05);
 }
 
-.campo-erro {
-    border: 2px solid #ff4d4f !important;
-    background-color: #fff0f0;
+.btnNovo {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(236, 72, 153, 0.35);
 }
 
-.nav-link {
-    transition: all 0.2s ease;
+.btnEditar {
+    background: #90a22b;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
 }
 
-.nav-link:hover {
-    background-color: #2a2a2a;
-    color: #E89C30 !important;
-    padding-left: 12px;
+.btnEditar:hover {
+    background: #adba60;
 }
 
-.logo {
-    background: #e89c30;
-    border-radius: 50%;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+.btnRemover {
+    background: #ef4444;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
 }
 
-.logo-sidebar {
-    background: #e89c30;
-    border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.btnRemover:hover {
+    background: #dc2626;
 }
 
-/* Sidebar normal */
+/* ---------- FORM ---------- */
+
+.form-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input,
+select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #f9a8d4;
+}
+
+/* ---------- SIDEBAR ---------- */
+
 .sidebar {
     width: 280px;
-    transition: width 0.3s;
+    background: white;
+    border-right: 1px solid #f3f4f6;
+    transition: width .3s;
 }
 
-/* Sidebar pequena */
 .sidebar.colapsada {
     width: 80px;
 }
 
-/* esconder texto quando colapsar */
 .sidebar.colapsada span,
 .sidebar.colapsada .nav-link {
     font-size: 0;
 }
 
-/* manter ícones visíveis */
-.sidebar.colapsada svg {
-    margin-right: 0;
+.sidebar.colapsada span {
+    display: none;
 }
 
-/* modal fundo */
+.nav-link {
+    transition: .2s;
+}
+
+.nav-link:hover {
+    background: #ffe4ec;
+    color: #ec4899 !important;
+    padding-left: 12px;
+}
+
+/* ---------- LOGO ---------- */
+
+.logo,
+.logo-sidebar {
+    background: #ec4899;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- CONTEUDO ---------- */
+
+.main-content {
+    padding: 30px;
+}
+
+/* ---------- CONTAINER TABELA ---------- */
+
+.table-container {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- TABELA ---------- */
+
+#tabelaProdutos {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabelaProdutos thead {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+#tabelaProdutos thead th {
+    color: white;
+    padding: 14px;
+}
+
+#tabelaProdutos tbody tr {
+    background: white;
+    border-bottom: 1px solid #f1f1f1;
+    transition: .2s;
+}
+
+#tabelaProdutos tbody tr:nth-child(even) {
+    background: #fff5f7;
+}
+
+#tabelaProdutos tbody tr:hover {
+    background: #ffe4ec;
+}
+
+#tabelaProdutos td {
+    padding: 12px;
+    color: #374151;
+}
+
+/* centralizar colunas numéricas */
+
+#tabelaProdutos td:nth-child(2),
+#tabelaProdutos td:nth-child(3),
+#tabelaProdutos td:nth-child(4),
+#tabelaProdutos td:nth-child(5),
+#tabelaProdutos td:nth-child(6),
+#tabelaProdutos td:nth-child(7),
+#tabelaProdutos td:nth-child(8) {
+    text-align: center;
+}
+
+/* ---------- DATATABLES ---------- */
+
+.dataTables_wrapper {
+    margin-top: 10px;
+    color: #374151;
+}
+
+.dataTables_length select {
+    border: 1px solid #f9a8d4;
+    border-radius: 6px;
+}
+
+.dataTables_filter input {
+    border: 1px solid #f9a8d4;
+    border-radius: 20px;
+    padding: 6px 14px;
+}
+
+.dataTables_filter input:focus {
+    border-color: #ec4899;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.25);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #ec4899 !important;
+    color: white !important;
+    border-radius: 6px;
+}
+
+/* ---------- ERRO INPUT ---------- */
+
+.campo-erro {
+    border: 2px solid #ff4d4f !important;
+    background: #fff0f0;
+}
+
+/* ---------- MODAL ---------- */
+
 .modal {
     display: none;
     position: fixed;
@@ -237,16 +244,14 @@ button:hover {
     z-index: 1000;
 }
 
-/* caixa modal */
 .modal-content {
-    background: #0f172a;
+    background: white;
     padding: 25px;
     border-radius: 12px;
     width: 500px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
-/* header */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -255,35 +260,33 @@ button:hover {
 }
 
 .modal-header h3 {
-    color: white;
+    color: #374151;
 }
 
 .btnFechar {
     background: none;
     border: none;
-    color: white;
     font-size: 18px;
     cursor: pointer;
 }
 
-/* grid form */
+/* ---------- GRID FORM ---------- */
+
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
-/* inputs */
 .form-grid input,
 .form-grid select {
     padding: 8px;
     border-radius: 6px;
-    border: 1px solid #334155;
-    background: #020617;
-    color: white;
+    border: 1px solid #f9a8d4;
 }
 
-/* upload */
+/* ---------- UPLOAD ---------- */
+
 .upload-imagem {
     margin-top: 15px;
     display: flex;
@@ -297,7 +300,8 @@ button:hover {
     display: none;
 }
 
-/* botões */
+/* ---------- BOTÕES MODAL ---------- */
+
 .modal-botoes {
     margin-top: 20px;
     display: flex;
@@ -306,20 +310,16 @@ button:hover {
 }
 
 .btnCancelar {
-    background: #374151;
-    border: none;
+    background: #9ca3af;
+    color: white;
     padding: 8px 14px;
     border-radius: 6px;
-    color: white;
-    cursor: pointer;
 }
 
 .btnSalvar {
     background: #ec4899;
-    border: none;
+    color: white;
     padding: 8px 16px;
     border-radius: 6px;
-    color: white;
     font-weight: 600;
-    cursor: pointer;
 }

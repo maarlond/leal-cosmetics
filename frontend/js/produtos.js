@@ -65,8 +65,8 @@ async function carregarProdutos() {
                 `R$ ${precoVenda.toFixed(2)}`,
                 `R$ ${estoque.toFixed(2)}`,
                 `R$ ${lucro.toFixed(2)}`,
-                `<button class="btnEditar" onclick='editarProduto(${JSON.stringify(produto)})'>Editar</button>
-                 <button class="btnRemover" onclick='removerProduto(${produto.id})'>Remover</button>`
+                `<button class="btnEditar" onclick='editarProduto(${JSON.stringify(produto)})'>✏ Editar</button>
+                 <button class="btnRemover" onclick='removerProduto(${produto.id})'>🗑 Remover</button>`
             ]);
         });
 
@@ -84,7 +84,9 @@ async function carregarProdutos() {
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formProduto");
+    console.log("Entrou aqui -> document.addEventListener('DOMContentLoaded', () => {")
     if (form) {
+        console.log("Entrou aqui -> form")
         form.addEventListener("submit", event => {
             event.preventDefault();
             adicionarProduto();
@@ -94,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function adicionarProduto() {
 
+    console.log("Entrou aqui -> adicionarProduto")
     if (!validarCampos()) return;
 
     const nome = document.getElementById("nome").value;
@@ -188,6 +191,7 @@ async function adicionarProduto() {
         }
         limparFormulario();
         carregarProdutos();
+        fecharModalProduto();
     } catch (err) {
         console.error(err); // importante para ver o que deu errado
         Swal.close();
@@ -239,7 +243,6 @@ function limparFormulario() {
 
     produtoEditando = null;
 
-    document.getElementById("btnAdicionar").textContent = "Adicionar";
 }
 
 /*document.addEventListener("DOMContentLoaded", () => {
@@ -248,7 +251,12 @@ function limparFormulario() {
 });*/
 
 function abrirModalProduto() {
-    document.getElementById("formProduto").reset();
+
+    produtoEditando = null;
+
+    const form = document.getElementById("formProduto");
+    form.reset();
+
     document.getElementById("modalProduto").style.display = "flex";
 }
 
