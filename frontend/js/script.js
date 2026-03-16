@@ -130,9 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!div) return;
 
   const frases = [
-    "🌸 Gerencie seu estoque de perfumes com elegância.",
-    "✨ Controle vendas, produtos e relatórios em um só lugar.",
-    "💄 Transforme organização em mais vendas.",
+    "🌸 Desperte sua essência — o perfume certo transforma qualquer momento.",
+    "✨ Perfume é mais que aroma, é identidade.",
+    "💄 Cada fragrância conta uma história — qual será a sua?",
   ];
 
   let fraseIndex = 0;
