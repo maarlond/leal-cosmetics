@@ -11,7 +11,7 @@ function iniciarDashboard() {
             datasets: [{
                 label: 'Vendas',
                 data: [120, 90, 150, 200, 300, 100, 250],
-                backgroundColor: '#ec4899'
+                backgroundColor: '#C9588B'
             }]
         }
     });

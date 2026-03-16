@@ -16,160 +16,149 @@ const btnLogout = document.getElementById("btnLogout");
 }*/
 
 const sidebar = document.querySelector(".sidebar");
-const toggleBtn = document.getElementById("toggleSidebar");
+/*const toggleBtn = document.getElementById("toggleSidebar");
 toggleBtn.addEventListener("click", function () {
+  sidebar.classList.toggle("colapsada");
 
-    sidebar.classList.toggle("colapsada");
-
-    if (sidebar.classList.contains("colapsada")) {
-        toggleBtn.innerHTML = "»";
-    } else {
-        toggleBtn.innerHTML = "«";
-    }
-
-});
+  if (sidebar.classList.contains("colapsada")) {
+    toggleBtn.innerHTML = "»";
+  } else {
+    toggleBtn.innerHTML = "«";
+  }
+});*/
 
 function validarCampos() {
+  let valido = true;
 
-    let valido = true;
+  const nome = document.getElementById("nome");
+  const codigo = document.getElementById("codigo");
+  const quantidade = document.getElementById("quantidade");
+  const custo = document.getElementById("preco_custo");
+  const venda = document.getElementById("preco_venda");
 
-    const nome = document.getElementById("nome");
-    const codigo = document.getElementById("codigo");
-    const quantidade = document.getElementById("quantidade");
-    const custo = document.getElementById("preco_custo");
-    const venda = document.getElementById("preco_venda");
+  const campos = [nome, codigo, quantidade, custo, venda];
 
-    const campos = [nome, codigo, quantidade, custo, venda];
+  // remove erro antigo
+  /*campos.forEach((c) => c.classList.remove("campo-erro"));
 
-    // remove erro antigo
-    campos.forEach(c => c.classList.remove("campo-erro"));
+  if (!nome.value.trim()) {
+    nome.classList.add("campo-erro");
+    valido = false;
+  }
 
-    if (!nome.value.trim()) {
-        nome.classList.add("campo-erro");
-        valido = false;
-    }
+  if (!codigo.value.trim()) {
+    codigo.classList.add("campo-erro");
+    valido = false;
+  }
 
-    if (!codigo.value.trim()) {
-        codigo.classList.add("campo-erro");
-        valido = false;
-    }
+  if (!quantidade.value || quantidade.value <= 0) {
+    quantidade.classList.add("campo-erro");
+    valido = false;
+  }
 
-    if (!quantidade.value || quantidade.value <= 0) {
-        quantidade.classList.add("campo-erro");
-        valido = false;
-    }
+  if (!custo.value || custo.value <= 0) {
+    custo.classList.add("campo-erro");
+    valido = false;
+  }
 
-    if (!custo.value || custo.value <= 0) {
-        custo.classList.add("campo-erro");
-        valido = false;
-    }
+  if (!venda.value || venda.value <= 0) {
+    venda.classList.add("campo-erro");
+    valido = false;
+  }*/
 
-    if (!venda.value || venda.value <= 0) {
-        venda.classList.add("campo-erro");
-        valido = false;
-    }
+  if (!valido) {
+    Swal.fire({
+      icon: "warning",
+      title: "Preencha os campos obrigatórios",
+      text: "Os campos em vermelho precisam ser corrigidos.",
+    });
 
-    if (!valido) {
+    return false;
+  }
 
-        Swal.fire({
-            icon: "warning",
-            title: "Preencha os campos obrigatórios",
-            text: "Os campos em vermelho precisam ser corrigidos."
-        });
-
-        return false;
-    }
-
-    return true;
+  return true;
 }
 
 function toggleSenha() {
-    const input = document.getElementById("senha");
-    if (input.type === "password") {
-        input.type = "text";
-    } else {
-        input.type = "password";
-    }
+  const input = document.getElementById("senha");
+  if (input.type === "password") {
+    input.type = "text";
+  } else {
+    input.type = "password";
+  }
 }
 
 // ------------------------------
 // LOGIN / LOGOUT
 // ------------------------------
 if (btnLogout) {
-    btnLogout.addEventListener("click", logout);
+  btnLogout.addEventListener("click", logout);
 }
 
-
 async function logout() {
-    const resultado = await Swal.fire({
-        title: "Tem certeza?",
-        text: "Deseja sair do sistema?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sim, sair",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6"
-    });
+  const resultado = await Swal.fire({
+    title: "Tem certeza?",
+    text: "Deseja sair do sistema?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sim, sair",
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+  });
 
-    if (resultado.isConfirmed) {
-        localStorage.removeItem("token");
-        window.location.href = "../pages/login.html";
-    }
+  if (resultado.isConfirmed) {
+    localStorage.removeItem("logado");
+    localStorage.removeItem("emailUsuario");
+    localStorage.removeItem("token");
+    window.location.href = "../pages/login.html";
+  }
 }
 
 function getHeaders() {
-    return {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-    };
+  return {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  };
 }
 
 // --- TEXTO EXEMPLO DINÂMICO ---
-const div = document.getElementById("textoExemplo");
-const typingContainer = document.getElementById("typingContainer");
 
-if (div) {
+document.addEventListener("DOMContentLoaded", () => {
+  const div = document.getElementById("textoExemplo");
 
-    const frases = [
-        "Desperte sua essência — o perfume certo transforma qualquer momento em uma lembrança inesquecível.",
-        "Perfume é mais que aroma, é identidade. Encontre o seu e marque presença por onde passar.",
-        "Cada fragrância conta uma história — qual será a sua?"
-    ];
-    let fraseIndex = 0;
+  if (!div) return;
 
-    function digitar(frase, callback) {
-        let i = 0;
-        div.innerHTML = "";
+  const frases = [
+    "🌸 Gerencie seu estoque de perfumes com elegância.",
+    "✨ Controle vendas, produtos e relatórios em um só lugar.",
+    "💄 Transforme organização em mais vendas.",
+  ];
 
-        function passo() {
-            if (i < frase.length) {
-                div.innerHTML += frase[i] === "\n" ? "<br>" : frase[i];
-                i++;
-                setTimeout(passo, 50);
-            } else {
-                setTimeout(callback, 1500);
-            }
-        }
+  let fraseIndex = 0;
 
-        passo();
+  function digitar(frase, callback) {
+    let i = 0;
+    div.innerHTML = "";
+
+    function passo() {
+      if (i < frase.length) {
+        div.innerHTML += frase[i] === "\n" ? "<br>" : frase[i];
+        i++;
+        setTimeout(passo, 50);
+      } else {
+        setTimeout(callback, 1500);
+      }
     }
 
-    function proximaFrase() {
-        digitar(frases[fraseIndex], () => {
-            fraseIndex = (fraseIndex + 1) % frases.length;
-            proximaFrase();
-        });
-    }
-    proximaFrase();
-}
+    passo();
+  }
 
-/*document.getElementById("btnToggleMenu").addEventListener("click", function () {
-
-    const sidebar = document.getElementById("sidebar");
-
-    sidebar.classList.toggle("colapsada");
-
-});*/
-
-
+  function proximaFrase() {
+    digitar(frases[fraseIndex], () => {
+      fraseIndex = (fraseIndex + 1) % frases.length;
+      proximaFrase();
+    });
+  }
+  proximaFrase();
+});

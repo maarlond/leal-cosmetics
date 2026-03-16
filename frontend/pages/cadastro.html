@@ -1,194 +1,224 @@
-<!--<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+    <link rel="stylesheet" href="./css/style.css" />
 
-<body>
-    <h1>Cadastro de Usuário</h1>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-    <div class="form-container">
-        <input type="text" id="nome" placeholder="Nome completo">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="senha" placeholder="Senha">
-        <input type="password" id="confirmaSenha" placeholder="Confirme a senha">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-        <button type="button" onclick="cadastrarUsuario()">Cadastrar</button>
-    </div>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css"
+      rel="stylesheet"
+    />
 
-    <p style="text-align:center; margin-top: 15px;">
-        Já tem uma conta? <a href="login.html" style="color:#6C63FF; font-weight:500;">Login</a>
-    </p>
-    <script src="js/cadastro.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</body>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-</html>-->
-
-<section class="vh-100">
-
-    <head>
-        <link rel="stylesheet" href="./css/style.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
-    </head>
     <style>
-        /* Corrigir autofill do navegador */
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
-            box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
-            -webkit-text-fill-color: #ffffff !important;
-            caret-color: #ffffff;
-            border: 1px solid #555;
-            transition: background-color 9999s ease-in-out 0s;
-        }
+      body {
+        font-family: "Poppins", sans-serif;
 
-        .exemplo-texto {
-            font-size: 1.5rem;
-            /* deixa maior que o normal */
-            font-weight: bold;
-            /* médio/grosso */
-            color: #d292ff;
-            /* cor escura */
-            max-width: 600px;
-            /* largura máxima para quebrar linha bonito */
-            line-height: 1.5;
-            /* espaço entre linhas */
-            white-space: pre-wrap;
-            /* respeita quebras de linha \n */
-            font-family: "Arial", sans-serif;
-            /* ou qualquer fonte clean */
-            margin: 20px auto;
-            /* centralizado horizontalmente */
-            border-right: 2px solid #111;
-            /* efeito cursor */
-            padding-right: 5px;
-            animation: piscarCursor 0.8s steps(1) infinite;
-        }
+        height: 100vh;
 
-        @keyframes piscarCursor {
+        margin: 0;
 
-            0%,
-            50% {
-                border-color: #111;
-            }
+        background-image: url("https://thecurvyfashionista.com/wp-content/uploads/2026/02/a-hand-elegantly-spritzing-perfume-from-a-decorative-bottle-against-a-dark-background.-31707005-scaled.jpg");
 
-            51%,
-            100% {
-                border-color: transparent;
-            }
-        }
+        background-size: cover;
 
-        .divider:after,
-        .divider:before {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #eee;
-        }
+        background-position: center;
 
+        display: flex;
 
-        body {
-            /*background-color: #181818;*/
-            background-color: #100B05;
-            /* Substitua pela cor desejada */
-        }
+        align-items: center;
 
-        .h-custom {
-            height: calc(100% - 73px);
-        }
+        justify-content: center;
+      }
 
-        @media (max-width: 450px) {
-            .h-custom {
-                height: 100%;
-            }
-        }
+      /* overlay suave */
 
-        .toggle-senha {
-            position: absolute;
-            right: 15px;
-            top: 55%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 18px;
-        }
+      body::before {
+        content: "";
+
+        position: absolute;
+
+        width: 100%;
+
+        height: 100%;
+
+        background: linear-gradient(135deg, #cf91a6aa, #ffffffcc);
+
+        backdrop-filter: blur(3px);
+      }
+
+      /* card */
+
+      .cadastro-card {
+        position: relative;
+
+        background: rgba(255, 255, 255, 0.9);
+
+        backdrop-filter: blur(10px);
+
+        padding: 40px;
+
+        border-radius: 16px;
+
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+
+        width: 380px;
+      }
+
+      /* botão */
+
+      .btn-cadastro {
+        background: linear-gradient(135deg, #d292ff, #b56df5);
+
+        border: none;
+
+        color: white;
+
+        padding: 12px;
+
+        border-radius: 8px;
+
+        font-weight: 600;
+
+        width: 100%;
+
+        transition: 0.3s;
+      }
+
+      .btn-cadastro:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      /* título */
+
+      .login-title {
+        font-weight: 600;
+
+        color: #7a3c8c;
+      }
+
+      /* senha */
+
+      .senha-container {
+        position: relative;
+      }
+
+      .toggle-senha {
+        position: absolute;
+
+        right: 15px;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        cursor: pointer;
+      }
+
+      /* autofill fix */
+
+      input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+
+        -webkit-text-fill-color: #000;
+      }
     </style>
-    <div class="container-fluid h-custom">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-9 col-lg-6 col-xl-5">
+  </head>
 
-                <!--<img src="https://img.freepik.com/vetores-premium/logotipo-de-perfume-vetor-icone-ilustracao-logotipo-de-design-para-loja-de-perfumes-de-estilo-de-vida-e-empresa-de-marca_611015-3789.jpg?semt=ais_hybrid&w=740&q=80"
-                <img
-                    src="https://img.freepik.com/vetores-premium/logotipo-de-perfume-vetor-icone-ilustracao-logotipo-de-design-para-loja-de-perfumes-de-estilo-de-vida-e-empresa-de-marca_611015-3787.jpg?semt=ais_hybrid&w=740&q=80"
-                    class="img-fluid" alt="Sample image">-->
-                <div id="textoExemplo" class="exemplo-texto"></div>
-            </div>
+  <body>
+    <div class="cadastro-card">
+      <h4 class="text-center mb-4 login-title">🌸 Criar Conta</h4>
 
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                <form>
-                    <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                        <p class="text-white lead fw-normal mb-0 me-3">Cadastrar-se</p>
-                    </div>
+      <form id="formCadastro">
+        <!-- NOME -->
 
-                    <!-- Nome input -->
-                    <div data-mdb-input-init class="form-outline mb-3">
-                        <input type="text" id="nome" class="text-white form-control form-control-lg"
-                            placeholder="Insira seu nome completo" required />
-                        <label class="text-white form-label">Nome completo</label>
-                    </div>
+        <div class="form-outline mb-4">
+          <input
+            type="text"
+            id="nome"
+            class="form-control form-control-lg"
+            required
+          />
 
-                    <!-- Email input -->
-                    <div data-mdb-input-init class="form-outline mb-3">
-                        <input type="email" id="email" class="text-white form-control form-control-lg"
-                            placeholder="Insira um e-mail válido" required />
-                        <label class="text-white form-label">E-mail</label>
-                    </div>
-
-                    <!-- Senha input -->
-                    <div data-mdb-input-init class="form-outline mb-3">
-                        <input type="password" id="senha" class="text-white form-control form-control-lg"
-                            placeholder="Insira sua senha" required />
-                        <label class="text-white form-label">Senha</label>
-                        <span class="toggle-senha" onclick="toggleSenha()"><i class="fa fa-eye"></i></i></span>
-                    </div>
-
-                    <!-- Confirmar senha input -->
-                    <div data-mdb-input-init class="form-outline mb-3 senha-container">
-                        <input type="password" id="confirmaSenha" class="text-white form-control form-control-lg"
-                            placeholder="Confirme a sua senha" required />
-                        <label class="text-white form-label">Confirmar senha</label>
-                    </div>
-
-                    <div class="text-center text-lg-start mt-4 pt-2">
-                        <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
-                            style="padding-left: 2.5rem; background-color: #d292ff; padding-right: 2.5rem;"
-                            onclick="cadastrarUsuario()">Cadastrar</button>
-
-                        <p onclick=" window.location.href='cadastro.html'"
-                            class=" text-white small fw-bold mt-2 pt-1 mb-0">Já possui uma conta? <a href="login.html"
-                                class="link-danger">Login</a></p>
-                    </div>
-
-                </form>
-            </div>
+          <label class="form-label">Nome completo</label>
         </div>
-    </div>
-    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5">
-        <!-- Copyright -->
-        <div class="text-white mb-3 mb-md-0">
-            Copyright © 2025. All rights reserved.
+
+        <!-- EMAIL -->
+
+        <div class="form-outline mb-4">
+          <input
+            type="email"
+            id="email"
+            class="form-control form-control-lg"
+            required
+          />
+
+          <label class="form-label">Email</label>
         </div>
-        <!-- Copyright -->
+
+        <!-- SENHA -->
+
+        <div class="form-outline mb-4 senha-container">
+          <input
+            type="password"
+            id="senha"
+            class="form-control form-control-lg"
+            required
+          />
+
+          <label class="form-label">Senha</label>
+
+          <span class="toggle-senha" onclick="toggleSenha()">
+            <i class="fa fa-eye"></i>
+          </span>
+        </div>
+
+        <!-- CONFIRMAR SENHA -->
+
+        <div class="form-outline mb-4">
+          <input
+            type="password"
+            id="confirmaSenha"
+            class="form-control form-control-lg"
+            required
+          />
+
+          <label class="form-label">Confirmar senha</label>
+        </div>
+
+        <button type="submit" class="btn-cadastro">Cadastrar</button>
+
+        <p class="text-center mt-3">
+          Já possui uma conta?
+
+          <a href="login.html">Login</a>
+        </p>
+      </form>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="js/script.js"></script>
-    <script src="js/cadastro.js"></script>
-</section>
+
+    <script src="../js/script.js"></script>
+
+    <script src="../js/cadastro.js"></script>
+  </body>
+</html>

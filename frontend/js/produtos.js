@@ -78,7 +78,7 @@ async function carregarProdutos() {
 
     } catch (err) {
         console.error(err);
-        Swal.fire("Erro", "Não foi possível carregar os produtos.", "error");
+        //Swal.fire("Erro", "Não foi possível carregar os produtos.", "error");
     }
 }
 
@@ -86,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formProduto");
     console.log("Entrou aqui -> document.addEventListener('DOMContentLoaded', () => {")
     if (form) {
-        console.log("Entrou aqui -> form")
         form.addEventListener("submit", event => {
             event.preventDefault();
             adicionarProduto();
