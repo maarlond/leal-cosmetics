@@ -162,28 +162,15 @@ async function adicionarProduto() {
 
   try {
     if (produtoEditando) {
-      console.log({
-        nome,
-        codigo,
-        marca,
-        quantidade,
-        preco_custo,
-        preco_venda,
-      });
-
       // EDITAR
       await fetch(`${API_URL}/produtos/${produtoEditando}`, {
         method: "PUT",
-        headers: getHeaders(),
-        body: JSON.stringify({
-          nome,
-          codigo,
-          marca,
-          quantidade,
-          preco_custo,
-          preco_venda,
-        }),
+        headers: {
+          Authorization: "Bearer " + token, // 🔥 só isso
+        },
+        body: formData, // 🔥 aqui é o segredo
       });
+
       produtoEditando = null;
 
       Swal.fire({
