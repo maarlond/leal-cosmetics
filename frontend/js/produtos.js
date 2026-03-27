@@ -107,23 +107,6 @@ async function carregarProdutos() {
   }
 }
 
-/*document.addEventListener("DOMContentLoaded", () => {
-  var form = document.getElementById("formProduto");
-  console.log(
-    "Entrou aqui -> document.addEventListener('DOMContentLoaded', () => {",
-  );
-
-  console.log("formformform: " + form)
-
-  if (form) {
-    console.log("Entrou aqui -> aaaaa");
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      adicionarProduto();
-    });
-  }
-});*/
-
 async function adicionarProduto() {
   console.log("Entrou aqui -> adicionarProduto");
 
@@ -222,12 +205,33 @@ async function removerProduto(id) {
   });
 
   if (resultado.isConfirmed) {
-    await fetch(`${API_URL}/produtos/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(),
-    });
+    try {
+      const response = await fetch(`${API_URL}/produtos/${id}`, {
+        method: "DELETE",
+        headers: getHeaders(),
+      });
 
-    Swal.fire("Removido!", "Produto removido com sucesso.", "success");
+      if (!response.ok) {
+        const erro = await response.json();
+        throw new Error(
+          erro.message ||
+            "Problema ao deletar, verifique se o produto não está com vendas cadastradas",
+        );
+      }
+
+      Swal.fire("Removido!", "Produto removido com sucesso.", "success");
+
+      // 🔥 Atualiza a lista depois de deletar
+      carregarProdutos();
+    } catch (err) {
+      console.error(err);
+
+      Swal.fire({
+        icon: "error",
+        title: "Erro ao remover",
+        text: err.message,
+      });
+    }
   }
   carregarProdutos();
 }
