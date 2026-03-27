@@ -37,6 +37,11 @@ function carregarPagina(pagina, elemento) {
         }
       }
 
+      if (pagina.includes("relatorios")) {
+        if (typeof iniciarRelatorios === "function") {
+          iniciarRelatorios();
+        }
+      }
       conteudo.classList.remove("fade-out");
       conteudo.classList.add("fade-in");
       setTimeout(() => conteudo.classList.remove("fade-in"), 250);

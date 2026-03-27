@@ -1,7 +1,1093 @@
-<script>
-  var logado = localStorage.getItem("logado");
+<!-- relatorios.html -->
+<style>
+  .rel-wrap * {
+    box-sizing: border-box;
+  }
 
-  if (logado !== "true") {
-    window.location.href = "../pages/login.html";
+  .rel-wrap {
+    padding: 32px 28px;
+    min-height: 100%;
+    font-family: "Inter", system-ui, sans-serif;
+    color: #1a1a1a;
+    background: #f5f3f0;
+  }
+
+  /* ── CABEÇALHO ── */
+  .rel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .rel-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .rel-sub {
+    color: #888;
+    font-size: 0.92rem;
+    margin-top: 4px;
+  }
+
+  .rel-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-exportar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background 0.2s,
+      transform 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn-exportar:hover {
+    transform: translateY(-1px);
+  }
+  .btn-pdf {
+    background: #8b5cf6;
+    color: #fff;
+  }
+  .btn-pdf:hover {
+    background: #7c3aed;
+  }
+  .btn-xlsx {
+    background: #10b981;
+    color: #fff;
+  }
+  .btn-xlsx:hover {
+    background: #059669;
+  }
+
+  /* ── FILTROS ── */
+  .filtros-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .filtro-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .filtro-input,
+  .filtro-select {
+    padding: 9px 12px;
+    border: 1.5px solid #e5e0da;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    color: #1a1a1a;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    width: 100%;
+  }
+  .filtro-input:focus,
+  .filtro-select:focus {
+    border-color: #8b5cf6;
+  }
+
+  .btn-filtrar {
+    padding: 9px 20px;
+    background: #8b5cf6;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+    align-self: flex-end;
+    white-space: nowrap;
+  }
+  .btn-filtrar:hover {
+    background: #7c3aed;
+  }
+
+  .btn-limpar {
+    padding: 9px 16px;
+    background: #f5f3f0;
+    color: #555;
+    border: none;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+    align-self: flex-end;
+    white-space: nowrap;
+  }
+  .btn-limpar:hover {
+    background: #ede9ff;
+    color: #7c3aed;
+  }
+
+  /* ── CARDS KPI ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .kpi-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  }
+  .kpi-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .kpi-valor {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #8b5cf6;
+  }
+  .kpi-valor.verde {
+    color: #10b981;
+  }
+  .kpi-valor.azul {
+    color: #3b82f6;
+  }
+  .kpi-valor.laranja {
+    color: #f59e0b;
+  }
+
+  /* ── GRÁFICO ── */
+  .grafico-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+  }
+  .grafico-titulo {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: #1a1a1a;
+  }
+
+  /* ── TABELA ── */
+  .table-box {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  .table-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #f0edf8;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .table-top-title {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .table-count {
+    font-size: 0.82rem;
+    color: #aaa;
+  }
+
+  /* DataTables overrides */
+  .table-box #tabelaRelatorio_wrapper {
+    padding: 0 20px 20px;
+  }
+  .table-box #tabelaRelatorio_filter {
+    margin-bottom: 12px;
+  }
+  .table-box #tabelaRelatorio_filter input {
+    border: 1.5px solid #e5e0da;
+    border-radius: 9px;
+    padding: 7px 12px;
+    font-size: 0.88rem;
+    outline: none;
+    font-family: "Inter", sans-serif;
+    transition: border-color 0.2s;
+  }
+  .table-box #tabelaRelatorio_filter input:focus {
+    border-color: #8b5cf6;
+  }
+  .table-box #tabelaRelatorio_filter label {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 500;
+  }
+  .table-box #tabelaRelatorio_length label {
+    color: #888;
+    font-size: 0.82rem;
+  }
+  .table-box #tabelaRelatorio_info {
+    color: #aaa;
+    font-size: 0.8rem;
+  }
+  .table-box #tabelaRelatorio_paginate .paginate_button {
+    border-radius: 7px !important;
+    border: none !important;
+    font-size: 0.82rem !important;
+  }
+  .table-box #tabelaRelatorio_paginate .paginate_button.current {
+    background: #8b5cf6 !important;
+    color: #fff !important;
+  }
+
+  table#tabelaRelatorio {
+    width: 100% !important;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+  }
+  table#tabelaRelatorio thead th {
+    background: #faf9ff;
+    color: #888;
+    font-weight: 600;
+    font-size: 0.73rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0edf8;
+    white-space: nowrap;
+  }
+  table#tabelaRelatorio tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #faf9ff;
+    vertical-align: middle;
+    color: #333;
+  }
+  table#tabelaRelatorio tbody tr:hover td {
+    background: #faf9ff;
+  }
+  table#tabelaRelatorio tbody tr:last-child td {
+    border-bottom: none;
+  }
+  table#tabelaRelatorio tfoot td {
+    padding: 12px 14px;
+    font-weight: 700;
+    background: #faf9ff;
+    border-top: 2px solid #f0edf8;
+    color: #555;
+    font-size: 0.86rem;
+  }
+
+  .badge-ok {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .badge-baixo {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .badge-zero {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .preco-roxo {
+    color: #8b5cf6;
+    font-weight: 700;
+  }
+  .lucro-verde {
+    color: #10b981;
+    font-weight: 700;
+  }
+
+  @media (max-width: 600px) {
+    .rel-wrap {
+      padding: 20px 16px;
+    }
+    .filtros-box {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div class="rel-wrap" id="relWrap">
+  <!-- CABEÇALHO -->
+  <div class="rel-header">
+    <div>
+      <h1 class="rel-title">Relatórios</h1>
+      <p class="rel-sub" id="relSubtitle">Carregando dados...</p>
+    </div>
+    <div class="rel-acoes">
+      <button class="btn-exportar btn-xlsx" onclick="exportarCSV()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        Exportar CSV
+      </button>
+      <button class="btn-exportar btn-pdf" onclick="exportarPDF()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="12" y1="18" x2="12" y2="12" />
+          <line x1="9" y1="15" x2="15" y2="15" />
+        </svg>
+        Gerar PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filtros-box">
+    <div class="filtro-grupo">
+      <label class="filtro-label">Buscar Produto</label>
+      <input
+        class="filtro-input"
+        type="text"
+        id="fBusca"
+        placeholder="Nome ou código..."
+      />
+    </div>
+    <div class="filtro-grupo">
+      <label class="filtro-label">Marca</label>
+      <select class="filtro-select" id="fMarca">
+        <option value="">Todas</option>
+      </select>
+    </div>
+    <div class="filtro-grupo">
+      <label class="filtro-label">Estoque</label>
+      <select class="filtro-select" id="fEstoque">
+        <option value="">Todos</option>
+        <option value="ok">Normal (>5)</option>
+        <option value="baixo">Baixo (1-5)</option>
+        <option value="zero">Esgotado</option>
+      </select>
+    </div>
+    <div class="filtro-grupo">
+      <label class="filtro-label">Preço Venda Mín.</label>
+      <input
+        class="filtro-input"
+        type="number"
+        id="fPrecoMin"
+        placeholder="R$ 0,00"
+        min="0"
+        step="0.01"
+      />
+    </div>
+    <div class="filtro-grupo">
+      <label class="filtro-label">Preço Venda Máx.</label>
+      <input
+        class="filtro-input"
+        type="number"
+        id="fPrecoMax"
+        placeholder="R$ 999,00"
+        min="0"
+        step="0.01"
+      />
+    </div>
+    <div class="filtro-grupo">
+      <label class="filtro-label">Ordenar por</label>
+      <select class="filtro-select" id="fOrdem">
+        <option value="nome">Nome</option>
+        <option value="qtd_desc">Maior Estoque</option>
+        <option value="qtd_asc">Menor Estoque</option>
+        <option value="preco_desc">Maior Preço</option>
+        <option value="preco_asc">Menor Preço</option>
+        <option value="lucro_desc">Maior Lucro</option>
+      </select>
+    </div>
+    <button class="btn-filtrar" onclick="aplicarFiltros()">Filtrar</button>
+    <button class="btn-limpar" onclick="limparFiltros()">Limpar</button>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Produtos Filtrados</div>
+      <div class="kpi-valor azul" id="kpiTotal">0</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Unidades em Estoque</div>
+      <div class="kpi-valor" id="kpiUnidades">0</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Valor em Estoque</div>
+      <div class="kpi-valor" id="kpiEstoque">R$ 0,00</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Lucro Potencial</div>
+      <div class="kpi-valor verde" id="kpiLucro">R$ 0,00</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Produtos Esgotados</div>
+      <div class="kpi-valor laranja" id="kpiEsgotados">0</div>
+    </div>
+  </div>
+
+  <!-- GRÁFICO -->
+  <div class="grafico-box">
+    <div class="grafico-titulo">Top 10 — Maior Valor em Estoque</div>
+    <canvas id="graficoEstoque" height="80"></canvas>
+  </div>
+
+  <!-- TABELA -->
+  <div class="table-box">
+    <div class="table-top">
+      <span class="table-top-title">Lista de Produtos</span>
+      <span class="table-count" id="tableCount"></span>
+    </div>
+    <table id="tabelaRelatorio" class="display nowrap" style="width: 100%">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Código</th>
+          <th>Marca</th>
+          <th>Qtd.</th>
+          <th>Custo</th>
+          <th>Venda</th>
+          <th>Val. Estoque</th>
+          <th>Lucro Total</th>
+          <th>Margem %</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <td colspan="6" style="font-weight: 700">Totais:</td>
+          <td id="footEstoque" style="font-weight: 700; color: #8b5cf6"></td>
+          <td id="footLucro" style="font-weight: 700; color: #10b981"></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  var _relProdutos = []; // todos os dados brutos
+  var _relFiltrados = []; // após filtros
+  var _relTabela = null;
+  var _relGrafico = null;
+
+  // ── INICIAR ──────────────────────────────────────────────
+  function iniciarRelatorios() {
+    if (!document.getElementById("tabelaRelatorio")) return;
+    if ($.fn.DataTable.isDataTable("#tabelaRelatorio")) {
+      $("#tabelaRelatorio").DataTable().destroy();
+      _relTabela = null;
+    }
+    carregarDadosRelatorio();
+  }
+
+  async function carregarDadosRelatorio() {
+    try {
+      var res = await fetch(API_URL + "/produtos", { headers: getHeaders() });
+      if (!res.ok) throw new Error();
+      _relProdutos = await res.json();
+      preencherFiltroMarcasRel();
+      aplicarFiltros();
+    } catch (e) {
+      console.error("Erro ao carregar relatório:", e);
+    }
+  }
+
+  function preencherFiltroMarcasRel() {
+    var sel = document.getElementById("fMarca");
+    var marcas = [
+      ...new Set(
+        _relProdutos
+          .map(function (p) {
+            return p.marca;
+          })
+          .filter(Boolean),
+      ),
+    ].sort();
+    sel.innerHTML =
+      '<option value="">Todas</option>' +
+      marcas
+        .map(function (m) {
+          return '<option value="' + m + '">' + m + "</option>";
+        })
+        .join("");
+  }
+
+  // ── FILTROS ───────────────────────────────────────────────
+  function aplicarFiltros() {
+    var busca = (document.getElementById("fBusca").value || "")
+      .toLowerCase()
+      .trim();
+    var marca = document.getElementById("fMarca").value;
+    var estoque = document.getElementById("fEstoque").value;
+    var precoMin = parseFloat(document.getElementById("fPrecoMin").value) || 0;
+    var precoMax =
+      parseFloat(document.getElementById("fPrecoMax").value) || Infinity;
+    var ordem = document.getElementById("fOrdem").value;
+
+    _relFiltrados = _relProdutos.filter(function (p) {
+      var qtd = p.quantidade ?? 0;
+      var venda = parseFloat(p.preco_venda ?? 0);
+
+      var okBusca =
+        !busca ||
+        p.nome.toLowerCase().includes(busca) ||
+        (p.codigo || "").toLowerCase().includes(busca);
+      var okMarca = !marca || p.marca === marca;
+      var okPreco = venda >= precoMin && venda <= precoMax;
+      var okEst =
+        !estoque ||
+        (estoque === "ok" && qtd > 5) ||
+        (estoque === "baixo" && qtd > 0 && qtd <= 5) ||
+        (estoque === "zero" && qtd <= 0);
+
+      return okBusca && okMarca && okPreco && okEst;
+    });
+
+    // ordenação
+    _relFiltrados.sort(function (a, b) {
+      var qa = a.quantidade ?? 0,
+        qb = b.quantidade ?? 0;
+      var va = parseFloat(a.preco_venda ?? 0),
+        vb = parseFloat(b.preco_venda ?? 0);
+      var la = (va - parseFloat(a.preco_custo ?? 0)) * qa;
+      var lb = (vb - parseFloat(b.preco_custo ?? 0)) * qb;
+      if (ordem === "qtd_desc") return qb - qa;
+      if (ordem === "qtd_asc") return qa - qb;
+      if (ordem === "preco_desc") return vb - va;
+      if (ordem === "preco_asc") return va - vb;
+      if (ordem === "lucro_desc") return lb - la;
+      return a.nome.localeCompare(b.nome);
+    });
+
+    atualizarKpis();
+    atualizarGrafico();
+    atualizarTabela();
+    atualizarSubtitle();
+  }
+
+  function limparFiltros() {
+    document.getElementById("fBusca").value = "";
+    document.getElementById("fMarca").value = "";
+    document.getElementById("fEstoque").value = "";
+    document.getElementById("fPrecoMin").value = "";
+    document.getElementById("fPrecoMax").value = "";
+    document.getElementById("fOrdem").value = "nome";
+    aplicarFiltros();
+  }
+
+  // ── KPIs ─────────────────────────────────────────────────
+  function atualizarKpis() {
+    var totalEst = 0,
+      totalLucro = 0,
+      totalUnid = 0,
+      esgotados = 0;
+    _relFiltrados.forEach(function (p) {
+      var qtd = p.quantidade ?? 0;
+      var custo = parseFloat(p.preco_custo ?? 0);
+      var venda = parseFloat(p.preco_venda ?? 0);
+      totalEst += qtd * venda;
+      totalLucro += (venda - custo) * qtd;
+      totalUnid += qtd;
+      if (qtd <= 0) esgotados++;
+    });
+
+    var fmt = function (v) {
+      return "R$ " + v.toFixed(2).replace(".", ",");
+    };
+    document.getElementById("kpiTotal").textContent = _relFiltrados.length;
+    document.getElementById("kpiUnidades").textContent = totalUnid;
+    document.getElementById("kpiEstoque").textContent = fmt(totalEst);
+    document.getElementById("kpiLucro").textContent = fmt(totalLucro);
+    document.getElementById("kpiEsgotados").textContent = esgotados;
+    document.getElementById("footEstoque").textContent = fmt(totalEst);
+    document.getElementById("footLucro").textContent = fmt(totalLucro);
+    document.getElementById("tableCount").textContent =
+      _relFiltrados.length + " produto(s)";
+  }
+
+  function atualizarSubtitle() {
+    var sub = document.getElementById("relSubtitle");
+    var data = new Date().toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+    if (sub)
+      sub.textContent =
+        "Gerado em " +
+        data +
+        " — " +
+        _relFiltrados.length +
+        " produto(s) encontrado(s)";
+  }
+
+  // ── GRÁFICO ───────────────────────────────────────────────
+  function atualizarGrafico() {
+    var ctx = document.getElementById("graficoEstoque");
+    if (!ctx || typeof Chart === "undefined") return;
+
+    var top10 = _relFiltrados
+      .filter(function (p) {
+        return (p.quantidade ?? 0) > 0;
+      })
+      .sort(function (a, b) {
+        return (
+          parseFloat(b.preco_venda ?? 0) * (b.quantidade ?? 0) -
+          parseFloat(a.preco_venda ?? 0) * (a.quantidade ?? 0)
+        );
+      })
+      .slice(0, 10);
+
+    var labels = top10.map(function (p) {
+      return p.nome.length > 18 ? p.nome.slice(0, 16) + "…" : p.nome;
+    });
+    var valores = top10.map(function (p) {
+      return parseFloat(p.preco_venda ?? 0) * (p.quantidade ?? 0);
+    });
+
+    if (_relGrafico) _relGrafico.destroy();
+
+    _relGrafico = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Valor em Estoque (R$)",
+            data: valores,
+            backgroundColor: "rgba(139,92,246,.25)",
+            borderColor: "#8b5cf6",
+            borderWidth: 2,
+            borderRadius: 8,
+            borderSkipped: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (c) {
+                return " R$ " + c.parsed.y.toFixed(2).replace(".", ",");
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: "#aaa", font: { size: 11 } },
+          },
+          y: {
+            grid: { color: "#f0edf8" },
+            ticks: {
+              color: "#aaa",
+              font: { size: 11 },
+              callback: function (v) {
+                return "R$ " + v.toFixed(0);
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // ── TABELA ────────────────────────────────────────────────
+  function atualizarTabela() {
+    if (_relTabela) {
+      _relTabela.destroy();
+      _relTabela = null;
+    }
+
+    var rows = _relFiltrados.map(function (p) {
+      var qtd = p.quantidade ?? 0;
+      var custo = parseFloat(p.preco_custo ?? 0);
+      var venda = parseFloat(p.preco_venda ?? 0);
+      var valEst = qtd * venda;
+      var lucro = (venda - custo) * qtd;
+      var margem =
+        venda > 0 ? (((venda - custo) / venda) * 100).toFixed(1) : "0.0";
+
+      var badge =
+        qtd <= 0
+          ? '<span class="badge-zero">Esgotado</span>'
+          : qtd <= 5
+            ? '<span class="badge-baixo">Baixo</span>'
+            : '<span class="badge-ok">OK</span>';
+
+      var fmt = function (v) {
+        return "R$ " + v.toFixed(2).replace(".", ",");
+      };
+
+      return [
+        "<strong>" + p.nome + "</strong>",
+        p.codigo || "—",
+        p.marca || "—",
+        qtd,
+        fmt(custo),
+        '<span class="preco-roxo">' + fmt(venda) + "</span>",
+        fmt(valEst),
+        '<span class="lucro-verde">' + fmt(lucro) + "</span>",
+        margem + "%",
+        badge,
+      ];
+    });
+
+    _relTabela = $("#tabelaRelatorio").DataTable({
+      data: rows,
+      pageLength: 15,
+      responsive: true,
+      autoWidth: false,
+      columnDefs: [{ orderable: false, targets: [9] }],
+      language: {
+        url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json",
+      },
+    });
+  }
+
+  // ── EXPORTAR CSV ─────────────────────────────────────────
+  function exportarCSV() {
+    if (!_relFiltrados.length) {
+      Swal.fire({
+        icon: "warning",
+        title: "Nenhum dado",
+        text: "Aplique filtros e tente novamente.",
+      });
+      return;
+    }
+
+    var cabecalho = [
+      "Produto",
+      "Código",
+      "Marca",
+      "Quantidade",
+      "Preço Custo",
+      "Preço Venda",
+      "Valor Estoque",
+      "Lucro Total",
+      "Margem %",
+      "Status",
+    ];
+    var linhas = _relFiltrados.map(function (p) {
+      var qtd = p.quantidade ?? 0;
+      var custo = parseFloat(p.preco_custo ?? 0);
+      var venda = parseFloat(p.preco_venda ?? 0);
+      var valEst = (qtd * venda).toFixed(2);
+      var lucro = ((venda - custo) * qtd).toFixed(2);
+      var margem =
+        venda > 0 ? (((venda - custo) / venda) * 100).toFixed(1) : "0.0";
+      var status = qtd <= 0 ? "Esgotado" : qtd <= 5 ? "Baixo" : "OK";
+      return [
+        p.nome,
+        p.codigo || "",
+        p.marca || "",
+        qtd,
+        custo.toFixed(2),
+        venda.toFixed(2),
+        valEst,
+        lucro,
+        margem + "%",
+        status,
+      ].join(";");
+    });
+
+    var csv = "\uFEFF" + cabecalho.join(";") + "\n" + linhas.join("\n");
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download =
+      "relatorio_estoque_" + new Date().toISOString().slice(0, 10) + ".csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── EXPORTAR PDF ─────────────────────────────────────────
+  async function exportarPDF() {
+    if (!_relFiltrados.length) {
+      Swal.fire({
+        icon: "warning",
+        title: "Nenhum dado",
+        text: "Aplique filtros e tente novamente.",
+      });
+      return;
+    }
+
+    // Carrega jsPDF dinamicamente se não estiver disponível
+    if (typeof window.jspdf === "undefined") {
+      await new Promise(function (resolve, reject) {
+        var s = document.createElement("script");
+        s.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    if (
+      typeof window.jspdf.jsPDF === "undefined" &&
+      typeof jsPDF === "undefined"
+    ) {
+      await new Promise(function (resolve, reject) {
+        var s = document.createElement("script");
+        s.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js";
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    } else {
+      await new Promise(function (resolve, reject) {
+        var s = document.createElement("script");
+        s.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js";
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    var doc = new jsPDFLib({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4",
+    });
+
+    var dataHoje = new Date().toLocaleDateString("pt-BR");
+    var totalEst = 0,
+      totalLucro = 0;
+
+    // Cabeçalho
+    doc.setFillColor(139, 92, 246);
+    doc.rect(0, 0, 297, 22, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Relatório de Estoque", 14, 14);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text("Gerado em " + dataHoje, 230, 14);
+
+    // Resumo rápido
+    doc.setTextColor(80, 80, 80);
+    doc.setFontSize(9);
+    doc.text("Total de produtos: " + _relFiltrados.length, 14, 30);
+
+    // Calcular totais para o resumo
+    _relFiltrados.forEach(function (p) {
+      var qtd = p.quantidade ?? 0;
+      totalEst += qtd * parseFloat(p.preco_venda ?? 0);
+      totalLucro +=
+        (parseFloat(p.preco_venda ?? 0) - parseFloat(p.preco_custo ?? 0)) * qtd;
+    });
+
+    var fmt = function (v) {
+      return "R$ " + v.toFixed(2).replace(".", ",");
+    };
+    doc.text("Valor total em estoque: " + fmt(totalEst), 80, 30);
+    doc.text("Lucro potencial: " + fmt(totalLucro), 180, 30);
+
+    // Tabela
+    doc.autoTable({
+      startY: 36,
+      head: [
+        [
+          "Produto",
+          "Código",
+          "Marca",
+          "Qtd.",
+          "Custo",
+          "Venda",
+          "Val. Estoque",
+          "Lucro",
+          "Margem",
+          "Status",
+        ],
+      ],
+      body: _relFiltrados.map(function (p) {
+        var qtd = p.quantidade ?? 0;
+        var custo = parseFloat(p.preco_custo ?? 0);
+        var venda = parseFloat(p.preco_venda ?? 0);
+        var valEst = qtd * venda;
+        var lucro = (venda - custo) * qtd;
+        var margem =
+          venda > 0 ? (((venda - custo) / venda) * 100).toFixed(1) + "%" : "0%";
+        var status = qtd <= 0 ? "Esgotado" : qtd <= 5 ? "Baixo" : "OK";
+        return [
+          p.nome,
+          p.codigo || "—",
+          p.marca || "—",
+          qtd,
+          fmt(custo),
+          fmt(venda),
+          fmt(valEst),
+          fmt(lucro),
+          margem,
+          status,
+        ];
+      }),
+      foot: [
+        ["Totais", "", "", "", "", "", fmt(totalEst), fmt(totalLucro), "", ""],
+      ],
+      styles: { fontSize: 8, cellPadding: 3, font: "helvetica" },
+      headStyles: {
+        fillColor: [139, 92, 246],
+        textColor: 255,
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+      footStyles: {
+        fillColor: [245, 243, 240],
+        textColor: [80, 80, 80],
+        fontStyle: "bold",
+      },
+      alternateRowStyles: { fillColor: [250, 249, 255] },
+      columnStyles: {
+        0: { cellWidth: 50 },
+        6: { textColor: [139, 92, 246], fontStyle: "bold" },
+        7: { textColor: [16, 185, 129], fontStyle: "bold" },
+        9: { cellWidth: 20 },
+      },
+      didDrawCell: function (data) {
+        if (data.section === "body" && data.column.index === 9) {
+          var val = data.cell.raw;
+          if (val === "Esgotado") {
+            doc.setFillColor(254, 226, 226);
+            doc.rect(
+              data.cell.x,
+              data.cell.y,
+              data.cell.width,
+              data.cell.height,
+              "F",
+            );
+            doc.setTextColor(153, 27, 27);
+            doc.setFontSize(7);
+            doc.text(
+              val,
+              data.cell.x + data.cell.width / 2,
+              data.cell.y + data.cell.height / 2 + 1,
+              { align: "center" },
+            );
+          } else if (val === "Baixo") {
+            doc.setFillColor(254, 243, 199);
+            doc.rect(
+              data.cell.x,
+              data.cell.y,
+              data.cell.width,
+              data.cell.height,
+              "F",
+            );
+            doc.setTextColor(146, 64, 14);
+            doc.setFontSize(7);
+            doc.text(
+              val,
+              data.cell.x + data.cell.width / 2,
+              data.cell.y + data.cell.height / 2 + 1,
+              { align: "center" },
+            );
+          }
+        }
+      },
+      margin: { left: 14, right: 14 },
+    });
+
+    // Rodapé
+    var pageCount = doc.internal.getNumberOfPages();
+    for (var i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(180, 180, 180);
+      doc.text(
+        "Página " + i + " de " + pageCount,
+        148,
+        doc.internal.pageSize.height - 8,
+        { align: "center" },
+      );
+    }
+
+    doc.save(
+      "relatorio_estoque_" + new Date().toISOString().slice(0, 10) + ".pdf",
+    );
   }
 </script>
