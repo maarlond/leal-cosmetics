@@ -46,9 +46,10 @@ node server.js
 - Sistema de login (Ok)
 - Tela de cadastro (Ok)
 - Edição de produtos (Ok)
+- Upload de imagens dos produtos (Ok)
 - Controle de vendas
-- Dashboard com relatórios
-- Integração com WhatsApp para pedidos
+- Dashboard com relatórios (Dashboard quase ok, relatórios não iniciado)
+- Integração com WhatsApp para pedidos (Faltando, ideia é criar uma nova tela somente para os clientes acessarem, analisarem os produtos e assim chamar no wpp, nessa mesma tela o vendedor poderá criar/editar)
 
 
 ## Autor
