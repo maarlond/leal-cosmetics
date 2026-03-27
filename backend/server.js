@@ -24,7 +24,8 @@ app.use("/", vendasRouter); // CRUD de vendas → /vendas/...
 // SERVER FRONTEND
 app.use(express.static(path.join(__dirname, "../frontend")));
 // SERVIR IMAGENS
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+//app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 const PORT = process.env.PORT || 3000;
 

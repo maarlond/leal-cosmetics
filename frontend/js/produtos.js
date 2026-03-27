@@ -58,7 +58,7 @@ function iniciarTabelaProdutos() {
 async function carregarProdutos() {
   if (!tabela) return; //
 
-  console.log("API_URL produtos" , API_URL)
+  console.log("API_URL produtos", API_URL);
   try {
     const resposta = await fetch(`${API_URL}/produtos`, {
       headers: getHeaders(),
@@ -135,8 +135,7 @@ async function adicionarProduto() {
   const quantidade = parseInt(document.getElementById("quantidade").value);
   const preco_custo = parseFloat(document.getElementById("preco_custo").value);
   const preco_venda = parseFloat(document.getElementById("preco_venda").value);
-
-  const imagemProduto = document.getElementById("imagemProduto").files[0];
+  const imagemProduto = document.getElementById("imagemProduto");
 
   const formData = new FormData();
 
@@ -147,8 +146,9 @@ async function adicionarProduto() {
   formData.append("preco_custo", preco_custo);
   formData.append("preco_venda", preco_venda);
 
-  if (imagemProduto) {
-    formData.append("imagemProduto", imagemProduto); // ✅ só uma vez
+  // Verifica se o usuário selecionou arquivo
+  if (imagemProduto && imagemProduto.files.length > 0) {
+    formData.append("imagemProduto", imagemProduto.files[0]);
   }
 
   Swal.fire({

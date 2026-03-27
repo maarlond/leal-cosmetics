@@ -82,3 +82,28 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-03-01 15:48:17
+
+
+/* NEW UPDATES CREATE TABLE VENDAS | VENDAS_ITENS */
+CREATE TABLE vendas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente VARCHAR(255),
+  forma_pagamento VARCHAR(50) NOT NULL,
+  observacao TEXT,
+  total DECIMAL(10,2) NOT NULL,
+  data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE venda_itens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  venda_id INT NOT NULL,
+  produto_id INT NOT NULL,
+  quantidade INT NOT NULL,
+  preco_unitario DECIMAL(10,2) NOT NULL,
+
+  FOREIGN KEY (venda_id) REFERENCES vendas(id),
+  FOREIGN KEY (produto_id) REFERENCES produtos(id)
+);
+
+ALTER TABLE produtos
+ADD COLUMN imagemProduto VARCHAR(255);
