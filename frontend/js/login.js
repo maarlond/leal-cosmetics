@@ -1,81 +1,114 @@
-//const API_URL = window.location.origin;
+// ── PROTEÇÃO DE ROTA ────────────────────────────────────
+// Se estiver no index.html e não tiver token, redireciona pro login
+(function verificarAutenticacao() {
+  var naLogin = window.location.pathname.includes("login.html");
+  var token = localStorage.getItem("token");
 
-function validarCampos() {
-  let valido = true;
-
-  const email = document.getElementById("email");
-  //const codigo = document.getElementById("codigo");
-  const senha = document.getElementById("senha");
-
-  const campos = [email, senha];
-
-  // remove erro antigo
-  /*campos.forEach((c) => c.classList.remove("campo-erro"));
-
-  if (!email.value.trim()) {
-    email.classList.add("campo-erro");
-    valido = false;
+  if (!naLogin && !token) {
+    window.location.href = "/pages/login.html";
+    return;
   }
 
-  if (!senha.value.trim()) {
-    senha.classList.add("campo-erro");
-    valido = false;
+  // Se já está logado e tentou acessar o login, vai pro index
+  if (naLogin && token) {
+    window.location.href = "/index.html";
   }
-*/
+})();
 
-  if (!valido) {
-    Swal.fire({
-      icon: "warning",
-      title: "Preencha os campos obrigatórios",
-      text: "Os campos em vermelho precisam ser corrigidos.",
-    });
+// ── VALIDAÇÃO DE CAMPOS ──────────────────────────────────
+function validarCamposLogin() {
+  var email = document.getElementById("email");
+  var senha = document.getElementById("senha");
 
-    return false;
-  }
+  if (!email || !senha) return true; // não está na página de login
 
-  return true;
-}
-
-async function login() {
-  console.log("aaaaaaaaaa");
-  if (!validarCampos()) return;
-
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-
-  if (!email || !senha) {
+  if (!email.value.trim() || !senha.value.trim()) {
     Swal.fire({
       icon: "warning",
       title: "Campos obrigatórios",
-      text: "Preencha todos os campos antes de continuar.",
+      text: "Preencha e-mail e senha para continuar.",
     });
-    return;
+    return false;
   }
-  console.log("email" + email);
-  console.log("senha" + senha);
+  return true;
+}
 
-  const resposta = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, senha }),
-  });
+// ── LOGIN ────────────────────────────────────────────────
+async function login() {
+  if (!validarCamposLogin()) return;
 
-  console.log("resposta: " + resposta);
-  const data = await resposta.json();
+  var email = document.getElementById("email").value.trim();
+  var senha = document.getElementById("senha").value.trim();
 
-  if (data.token) {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("logado", "true");
-    localStorage.setItem("emailUsuario", email);
+  var btn = document.getElementById("btnLogin");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Entrando...";
+  }
 
-    window.location.href = "../index.html";
-  } else {
+  try {
+    var resposta = await fetch(API_URL + "/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, senha: senha }),
+    });
+
+    var data = await resposta.json();
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("logado", "true");
+      localStorage.setItem("emailUsuario", email);
+      window.location.href = "/index.html";
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Acesso negado",
+        text: data.message || "E-mail ou senha inválidos.",
+      });
+    }
+  } catch (err) {
+    console.error("Erro no login:", err);
     Swal.fire({
       icon: "error",
-      title: "Oops...",
-      text: "E-mail ou senha inválidos",
+      title: "Erro de conexão",
+      text: "Não foi possível conectar ao servidor.",
     });
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Entrar";
+    }
   }
 }
+
+// ── LOGOUT ───────────────────────────────────────────────
+async function logout() {
+  var resultado = await Swal.fire({
+    title: "Tem certeza?",
+    text: "Deseja sair do sistema?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sim, sair",
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+  });
+
+  if (resultado.isConfirmed) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("logado");
+    localStorage.removeItem("emailUsuario");
+    window.location.href = "/pages/login.html";
+  }
+}
+
+// ── ENTER para submeter ──────────────────────────────────
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    var senhaEl = document.getElementById("senha");
+    if (senhaEl && document.activeElement === senhaEl) {
+      login();
+    }
+  }
+});

@@ -63,7 +63,8 @@ function validarEmail(email) {
 
 // Valida senha (mínimo 6 caracteres, pelo menos uma letra e um número)
 function validarSenha(senha) {
-  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+  senha = senha.trim();
+  const regex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
   return regex.test(senha);
 }
 
