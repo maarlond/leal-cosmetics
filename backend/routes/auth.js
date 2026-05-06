@@ -67,22 +67,8 @@ router.post("/usuarios", async (req, res) => {
 
     res.status(201).json({ mensagem: "Usuário cadastrado com sucesso" });
   } catch (err) {
+    console.error("Error: " + err);
     return res.status(500).json({ mensagem: "Erro no banco" });
-  }
-});
-
-router.get("/test-db", async (req, res) => {
-  try {
-    const result = await db.query("SELECT NOW()");
-    res.json({
-      ok: true,
-      time: result.rows[0],
-    });
-  } catch (err) {
-    res.status(500).json({
-      ok: false,
-      error: err.message,
-    });
   }
 });
 
