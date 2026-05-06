@@ -206,7 +206,6 @@ async function finalizarVenda() {
     ? inputData + " 00:00:00"
     : new Date().toISOString().slice(0, 19).replace("T", " ");
 
-  console.log("dataFormatada", dataFormatada);
   const payload = {
     forma_pagamento: forma,
     cliente: document.getElementById("nomeCliente").value.trim() || null,
@@ -235,9 +234,6 @@ async function finalizarVenda() {
       body: JSON.stringify(payload),
     });
 
-    console.log("resres", res);
-    console.log("🚀 URL:", `${API_URL}/vendas/`);
-    console.log("🚀 Payload:", JSON.stringify(payload));
     if (!res.ok) throw new Error("Erro ao registrar venda");
 
     await Swal.fire({

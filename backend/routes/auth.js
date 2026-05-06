@@ -16,64 +16,59 @@ const SECRET = "segredo_super";
 // ROTA DE LOGIN
 // ===============================
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
+  const { email, senha } = req.body;
 
-    const { email, senha } = req.body;
+  try {
+    const sql = "SELECT * FROM usuarios WHERE email = $1";
+    const result = await db.query(sql, [email]);
 
-    const sql = "SELECT * FROM usuarios WHERE email = ?";
+    // verifica se usuário existe
+    if (result.rows.length === 0) {
+      return res.status(401).json({ erro: "Usuário não encontrado" });
+    }
 
-    db.query(sql, [email], async (err, result) => {
+    const usuario = result.rows[0];
 
-        if (err) {
-            return res.status(500).json(err);
-        }
+    // comparar senha
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
-        // verifica se usuário existe
-        if (result.length === 0) {
-            return res.status(401).json({ erro: "Usuário não encontrado" });
-        }
+    if (!senhaValida) {
+      return res.status(401).json({ erro: "Senha inválida" });
+    }
 
-        const usuario = result[0];
+    // JWT
+    const token = jwt.sign({ id: usuario.id }, SECRET, { expiresIn: "8h" });
 
-        // comparar senha digitada com hash
-        const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
-        if (!senhaValida) {
-            return res.status(401).json({ erro: "Senha inválida" });
-        }
-
-        // gerar token JWT
-        const token = jwt.sign(
-            { id: usuario.id },
-            SECRET,
-            { expiresIn: "8h" }
-        );
-
-        res.json({ token });
-
-    });
-
+    res.json({ token });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
 });
 
-
-// --- Cadastro ---
 router.post("/usuarios", async (req, res) => {
-    const { nome, email, senha } = req.body;
+  const { nome, email, senha } = req.body;
 
-    const sqlVerifica = "SELECT * FROM usuarios WHERE email = ?";
+  try {
+    const verifica = await db.query("SELECT * FROM usuarios WHERE email = $1", [
+      email,
+    ]);
 
-    db.query(sqlVerifica, [email], async (err, result) => {
+    if (verifica.rows.length > 0) {
+      return res.status(400).json({ mensagem: "E-mail já cadastrado" });
+    }
 
-        if (err) return res.status(500).json({ mensagem: "Erro no banco" });
-        if (result.length > 0) return res.status(400).json({ mensagem: "E-mail já cadastrado" });
+    const senhaHash = await bcrypt.hash(senha, 10);
 
-        const senhaHash = await bcrypt.hash(senha, 10);
-        const sqlInserir = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-        db.query(sqlInserir, [nome, email, senhaHash], (err) => {
-            if (err) return res.status(500).json({ mensagem: "Erro ao cadastrar" });
-            res.status(201).json({ mensagem: "Usuário cadastrado com sucesso" });
-        });
-    });
+    await db.query(
+      "INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3)",
+      [nome, email, senhaHash],
+    );
+
+    res.status(201).json({ mensagem: "Usuário cadastrado com sucesso" });
+  } catch (err) {
+    return res.status(500).json({ mensagem: "Erro no banco" });
+  }
 });
 
 // exportar rotas

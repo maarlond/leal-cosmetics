@@ -679,6 +679,7 @@
   // ── ÚLTIMAS VENDAS ────────────────────────────────────────
   async function carregarUltimasVendas() {
     const token = localStorage.getItem("token");
+
     const headers = { Authorization: `Bearer ${token}` };
     const tbody = document.getElementById("ultimasVendas");
 

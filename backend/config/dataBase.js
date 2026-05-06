@@ -1,20 +1,14 @@
-const mysql = require("mysql2");
+const { Pool } = require("pg");
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error("Erro ao conectar:", err);
-    return;
-  }
-
-  console.log("Banco conectado!");
-});
+db.connect()
+  .then(() => console.log("✅ Banco Supabase conectado"))
+  .catch((err) => console.error("Erro conexão DB:", err));
 
 module.exports = db;

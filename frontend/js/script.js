@@ -1,7 +1,10 @@
 // ------------------------------
 // PRODUTOS
 // ------------------------------
-const API_URL = window.location.origin;
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : "https://estoque-namorada.onrender.com"; //const API_URL = "http://localhost:3000";
 //let produtoEditando = null;
 
 // ------------------------------
@@ -162,9 +165,11 @@ async function logout() {
 }
 
 function getHeaders() {
+  const token = localStorage.getItem("token");
+
   return {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + token,
+    Authorization: token ? `Bearer ${token}` : "",
   };
 }
 

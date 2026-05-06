@@ -4,9 +4,11 @@
 var produtoEditando = null;
 
 function getHeaders() {
+  const token = localStorage.getItem("token");
+
   return {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + token,
+    Authorization: token ? `Bearer ${token}` : "",
   };
 }
 
@@ -28,7 +30,6 @@ function configurarFormularioProduto() {
 
 function handleSubmitProduto(e) {
   e.preventDefault();
-  console.log("🔥 submit funcionando");
   adicionarProduto();
 }
 
@@ -58,7 +59,6 @@ function iniciarTabelaProdutos() {
 async function carregarProdutos() {
   if (!tabela) return; //
 
-  console.log("API_URL produtos", API_URL);
   try {
     const resposta = await fetch(`${API_URL}/produtos`, {
       headers: getHeaders(),
@@ -108,8 +108,6 @@ async function carregarProdutos() {
 }
 
 async function adicionarProduto() {
-  console.log("Entrou aqui -> adicionarProduto");
-
   if (!validarCampos()) return;
 
   const nome = document.getElementById("nome").value;
