@@ -539,18 +539,14 @@
 
       if (res.ok) {
         const dados = await res.json();
-        console.log("dados", dados);
         // espera [{data: 'YYYY-MM-DD', total: 0}]
         dados.forEach((d) => {
-          console.log("dddddd", d);
           const idx = labels.findIndex((_, i) => {
             const dia = new Date(hoje);
             dia.setDate(hoje.getDate() - (6 - i));
 
-            console.log("teste1", dia.toISOString().slice(0, 10));
             // Pega a string até a letra "T"
             const dataLimpa = d.data.split("T")[0];
-            console.log("teste2", dataLimpa);
             return dia.toISOString().slice(0, 10) === dataLimpa;
           });
           if (idx >= 0) valores[idx] = parseFloat(d.total);
@@ -563,7 +559,6 @@
     const ctx = document.getElementById("graficoVendas");
     if (chartVendas) chartVendas.destroy();
 
-    console.log("valores", valores);
     chartVendas = new Chart(ctx, {
       type: "bar",
       data: {
@@ -705,7 +700,6 @@
           // 2. Converte para objeto Date (o JS entende bem o formato do banco)
           const dataFormatada = new Date(dataBruta).toLocaleDateString("pt-BR");
 
-          console.log("dataFormatada", dataFormatada);
           const total =
             "R$ " +
             parseFloat(v.total ?? 0)

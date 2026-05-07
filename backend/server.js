@@ -1,4 +1,5 @@
 require("dotenv").config();
+const db = require("./config/dataBase.js");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -10,6 +11,37 @@ app.use(express.json());
 const authRouter = require("./routes/auth");
 const produtosRouter = require("./routes/produtos");
 const vendasRouter = require("./routes/vendas");
+
+// ── CATÁLOGO PÚBLICO (sem token) ──────────────────
+app.get("/catalogo", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/pages/catalogo.html"));
+});
+
+app.get("/catalogo/produtos", async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT 
+        id,
+        nome,
+        marca,
+        preco_venda,
+        quantidade,
+        imagemproduto
+      FROM produtos
+      WHERE quantidade > 0
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Erro catálogo:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── ROTAS PROTEGIDAS ──────────────────────────────
+app.use("/", authRouter);
+app.use("/produtos", produtosRouter);
+app.use("/vendas", vendasRouter);
 
 app.use((req, res, next) => {
   console.log(`➡️  ${req.method} ${req.url}`);
