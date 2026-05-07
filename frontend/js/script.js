@@ -216,3 +216,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   proximaFrase();
 });
+
+// --- TEXTO EXEMPLO DINÂMICO ---
+
+document.addEventListener("DOMContentLoaded", () => {
+  const div = document.getElementById("textoExemplo2");
+
+  if (!div) return;
+
+  const frases = [
+    "🌸 Perfumes, cremes e cosméticos selecionados com carinho para você.",
+    "✨ Monte seu pedido e fale com a gente!",
+  ];
+
+  let fraseIndex = 0;
+
+  function digitar(frase, callback) {
+    let i = 0;
+    div.innerHTML = "";
+
+    function passo() {
+      if (i < frase.length) {
+        div.innerHTML += frase[i] === "\n" ? "<br>" : frase[i];
+        i++;
+        setTimeout(passo, 50);
+      } else {
+        setTimeout(callback, 1500);
+      }
+    }
+
+    passo();
+  }
+
+  function proximaFrase() {
+    digitar(frases[fraseIndex], () => {
+      fraseIndex = (fraseIndex + 1) % frases.length;
+      proximaFrase();
+    });
+  }
+  proximaFrase();
+});
