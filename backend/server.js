@@ -17,6 +17,10 @@ app.get("/catalogo", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/pages/catalogo.html"));
 });
 
+app.get("/pages/verificar.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/pages/verificar.html"));
+});
+
 app.get("/catalogo/produtos", async (req, res) => {
   try {
     const result = await db.query(`

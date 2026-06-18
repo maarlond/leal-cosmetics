@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificação de E-mail — Leal Cosméticos</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          #1a0d14 0%,
+          #3d1530 50%,
+          #c4517a 100%
+        );
+        padding: 20px;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 48px 40px;
+        max-width: 440px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+        animation: cardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      @keyframes cardIn {
+        from {
+          opacity: 0;
+          transform: translateY(40px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        animation: iconPop 0.5s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      @keyframes iconPop {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+
+      h1 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1a0d14;
+        margin-bottom: 12px;
+      }
+      p {
+        font-size: 0.9rem;
+        color: #888;
+        line-height: 1.7;
+        margin-bottom: 28px;
+      }
+      p strong {
+        color: #555;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 13px 32px;
+        border-radius: 12px;
+        font-size: 0.92rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        border: none;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+        width: 100%;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #c4517a, #8b3457);
+        color: #fff;
+      }
+      .btn-secondary {
+        background: #f5f0ff;
+        color: #8b3457;
+        margin-top: 10px;
+      }
+
+      .logo {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #c4517a;
+        margin-bottom: 28px;
+      }
+
+      /* reenvio */
+      .reenvio {
+        margin-top: 20px;
+      }
+      .reenvio input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid #eddde6;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-family: "Poppins", sans-serif;
+        outline: none;
+        margin-bottom: 10px;
+        color: #1a0d14;
+        transition: border-color 0.2s;
+      }
+      .reenvio input:focus {
+        border-color: #c4517a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="card">
+      <div class="logo">💜 Leal Cosméticos</div>
+      <!-- conteúdo injetado via JS -->
+    </div>
+
+    <script>
+      var params = new URLSearchParams(window.location.search);
+      var status = params.get("status") || "invalido";
+      var card = document.getElementById("card");
+
+      var estados = {
+        sucesso: {
+          icon: "✅",
+          titulo: "E-mail confirmado!",
+          texto:
+            "Sua conta foi ativada com sucesso. Você já pode fazer login no sistema.",
+          botoes: `<a href="/pages/login.html" class="btn btn-primary">Ir para o Login</a>`,
+        },
+        jaVerificado: {
+          icon: "👍",
+          titulo: "E-mail já verificado!",
+          texto:
+            "Este e-mail já foi confirmado anteriormente. Você já pode fazer login normalmente.",
+          botoes: `<a href="/pages/login.html" class="btn btn-primary">Ir para o Login</a>`,
+        },
+        expirado: {
+          icon: "⏰",
+          titulo: "Link expirado",
+          texto:
+            "Este link de verificação expirou. Links são válidos por <strong>24 horas</strong>.<br/>Solicite um novo link abaixo.",
+          botoes: `
+        <div class="reenvio">
+          <input type="email" id="emailReenvio" placeholder="Digite seu e-mail cadastrado" />
+          <button class="btn btn-primary" onclick="reenviar()">Reenviar link de verificação</button>
+        </div>`,
+        },
+        invalido: {
+          icon: "❌",
+          titulo: "Link inválido",
+          texto:
+            "Este link não é válido ou já foi utilizado. Se precisar de ajuda, solicite um novo link abaixo.",
+          botoes: `
+        <div class="reenvio">
+          <input type="email" id="emailReenvio" placeholder="Digite seu e-mail cadastrado" />
+          <button class="btn btn-primary" onclick="reenviar()">Reenviar link de verificação</button>
+        </div>
+        <a href="/pages/login.html" class="btn btn-secondary">Voltar ao Login</a>`,
+        },
+        erro: {
+          icon: "⚠️",
+          titulo: "Erro ao verificar",
+          texto:
+            "Ocorreu um erro inesperado. Tente novamente ou entre em contato.",
+          botoes: `<a href="/pages/login.html" class="btn btn-secondary">Voltar ao Login</a>`,
+        },
+      };
+
+      var estado = estados[status] || estados.invalido;
+
+      card.innerHTML = `
+    <div class="logo">💜 Leal Cosméticos</div>
+    <div class="icon">${estado.icon}</div>
+    <h1>${estado.titulo}</h1>
+    <p>${estado.texto}</p>
+    ${estado.botoes}
+  `;
+
+      async function reenviar() {
+        var emailEl = document.getElementById("emailReenvio");
+        var email = emailEl ? emailEl.value.trim() : "";
+
+        if (!email) {
+          Swal.fire({
+            icon: "warning",
+            title: "Digite seu e-mail",
+            confirmButtonColor: "#c4517a",
+          });
+          return;
+        }
+
+        var btn = document.querySelector(".reenvio .btn");
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Enviando...";
+        }
+
+        try {
+          var res = await fetch("/auth/reenviar-verificacao", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+          var data = await res.json();
+          Swal.fire({
+            icon: "success",
+            title: "E-mail enviado!",
+            text: data.mensagem,
+            confirmButtonColor: "#c4517a",
+          });
+        } catch (e) {
+          Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "Não foi possível enviar. Tente novamente.",
+            confirmButtonColor: "#c4517a",
+          });
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Reenviar link de verificação";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
+  

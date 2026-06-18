@@ -4,11 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nova Venda</title>
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
       * {
         box-sizing: border-box;
@@ -42,6 +45,7 @@
         color: #1a1a1a;
         line-height: 1.1;
       }
+
       .page-subtitle {
         color: #888;
         font-size: 0.92rem;
@@ -54,6 +58,7 @@
         position: relative;
         margin-bottom: 20px;
       }
+
       .search-wrap svg {
         position: absolute;
         left: 14px;
@@ -61,6 +66,7 @@
         transform: translateY(-50%);
         color: #aaa;
       }
+
       .search-input {
         width: 100%;
         padding: 11px 14px 11px 42px;
@@ -71,6 +77,7 @@
         outline: none;
         transition: border-color 0.2s;
       }
+
       .search-input:focus {
         border-color: #8b5cf6;
       }
@@ -89,6 +96,7 @@
         display: flex;
         align-items: center;
         gap: 14px;
+        min-height: 100px;
         cursor: pointer;
         border: 2px solid transparent;
         transition:
@@ -97,15 +105,18 @@
           transform 0.15s;
         user-select: none;
       }
+
       .produto-card:hover {
         border-color: #8b5cf6;
         box-shadow: 0 4px 16px rgba(139, 92, 246, 0.12);
         transform: translateY(-2px);
       }
+
       .produto-card.sem-estoque {
         opacity: 0.5;
         cursor: not-allowed;
       }
+
       .produto-card.sem-estoque:hover {
         border-color: transparent;
         box-shadow: none;
@@ -120,6 +131,7 @@
         flex-shrink: 0;
         background: #f0edf8;
       }
+
       .produto-img-placeholder {
         width: 56px;
         height: 56px;
@@ -136,26 +148,55 @@
         flex: 1;
         min-width: 0;
       }
+
+      /*
+       * CORREÇÃO:
+       * O nome agora pode ocupar até 3 linhas, em vez de ser cortado
+       * em apenas uma linha com "...".
+       */
       .produto-nome {
         font-weight: 600;
         font-size: 0.95rem;
-        white-space: nowrap;
+        line-height: 1.25;
+        white-space: normal;
+        overflow-wrap: anywhere;
         overflow: hidden;
-        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
       }
+
       .produto-preco {
         color: #8b5cf6;
         font-weight: 700;
         font-size: 1rem;
-        margin-top: 2px;
+        margin-top: 4px;
       }
+
       .produto-estoque {
         font-size: 0.78rem;
         color: #888;
         margin-top: 3px;
       }
+
       .badge-estoque-baixo {
         color: #e67e22 !important;
+      }
+
+      /*
+       * Classe opcional para destacar variações como:
+       * "Kit com 2 unidades", "Kit com 3 unidades", "200 ml" etc.
+       */
+      .produto-variacao {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 2px 7px;
+        border-radius: 20px;
+        background: #f0eaff;
+        color: #7c3aed;
+        font-size: 0.72rem;
+        font-weight: 700;
       }
 
       /* estado vazio */
@@ -165,6 +206,7 @@
         padding: 50px 20px;
         color: #bbb;
       }
+
       .empty-state svg {
         margin-bottom: 12px;
         opacity: 0.4;
@@ -182,14 +224,17 @@
         animation: shimmer 1.2s infinite;
         border-radius: 10px;
       }
+
       @keyframes shimmer {
         0% {
           background-position: 200% 0;
         }
+
         100% {
           background-position: -200% 0;
         }
       }
+
       .skeleton-card {
         background: #fff;
         border-radius: 14px;
@@ -197,6 +242,7 @@
         display: flex;
         gap: 14px;
         align-items: center;
+        min-height: 100px;
       }
 
       /* ── COLUNA DIREITA — CARRINHO ── */
@@ -223,6 +269,7 @@
         margin-bottom: 16px;
         color: #1a1a1a;
       }
+
       .carrinho-titulo svg {
         color: #8b5cf6;
       }
@@ -239,31 +286,41 @@
         margin-bottom: 4px;
       }
 
+      /*
+       * Grid evita que nome, quantidade, preço e excluir se sobreponham.
+       */
       .carrinho-item {
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto auto;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         padding: 10px 0;
         border-bottom: 1px solid #f0edf8;
       }
+
       .carrinho-item:last-child {
         border-bottom: none;
       }
 
+      /*
+       * CORREÇÃO:
+       * O nome do produto no carrinho pode quebrar linha e aparecer completo.
+       */
       .ci-nome {
-        flex: 1;
-        font-size: 0.88rem;
-        font-weight: 500;
         min-width: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 0.84rem;
+        font-weight: 500;
+        line-height: 1.25;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
+
       .ci-qtd {
         display: flex;
         align-items: center;
         gap: 6px;
       }
+
       .ci-qtd button {
         width: 26px;
         height: 26px;
@@ -279,22 +336,26 @@
         align-items: center;
         justify-content: center;
       }
+
       .ci-qtd button:hover {
         background: #ede9ff;
         border-color: #8b5cf6;
       }
+
       .ci-qtd span {
         font-weight: 600;
         font-size: 0.9rem;
         min-width: 20px;
         text-align: center;
       }
+
       .ci-preco {
         font-weight: 700;
         font-size: 0.9rem;
         color: #8b5cf6;
         white-space: nowrap;
       }
+
       .ci-remove {
         background: none;
         border: none;
@@ -305,6 +366,7 @@
         transition: color 0.15s;
         display: flex;
       }
+
       .ci-remove:hover {
         color: #e74c3c;
       }
@@ -318,10 +380,12 @@
         padding-top: 14px;
         border-top: 1.5px solid #f0edf8;
       }
+
       .carrinho-total span:first-child {
         font-weight: 600;
         color: #555;
       }
+
       .total-valor {
         font-size: 1.4rem;
         font-weight: 800;
@@ -335,6 +399,7 @@
         color: #555;
         margin-bottom: 6px;
       }
+
       .campo-label .req {
         color: #e74c3c;
       }
@@ -353,11 +418,13 @@
         transition: border-color 0.2s;
         font-family: inherit;
       }
+
       .campo-select:focus,
       .campo-input:focus,
       .campo-textarea:focus {
         border-color: #8b5cf6;
       }
+
       .campo-textarea {
         resize: vertical;
         min-height: 72px;
@@ -387,13 +454,16 @@
           transform 0.15s;
         margin-top: 6px;
       }
+
       .btn-finalizar:hover {
         background: #7c3aed;
         transform: translateY(-1px);
       }
+
       .btn-finalizar:active {
         transform: translateY(0);
       }
+
       .btn-finalizar:disabled {
         background: #c4b5fd;
         cursor: not-allowed;
@@ -406,15 +476,32 @@
           flex-direction: column;
           padding: 20px 16px;
         }
+
         .col-carrinho {
           width: 100%;
         }
+
         .carrinho-box {
           position: static;
         }
       }
+
+      @media (max-width: 420px) {
+        .produtos-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .carrinho-item {
+          grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        .ci-nome {
+          grid-column: 1 / -1;
+        }
+      }
     </style>
   </head>
+
   <body>
     <div class="venda-wrapper">
       <!-- ═══ COLUNA ESQUERDA ═══ -->
@@ -437,6 +524,7 @@
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
           </svg>
+
           <input
             class="search-input"
             type="text"
@@ -457,14 +545,17 @@
                 flex-shrink: 0;
               "
             ></div>
+
             <div style="flex: 1">
               <div
                 class="skeleton"
                 style="height: 14px; width: 70%; margin-bottom: 8px"
               ></div>
+
               <div class="skeleton" style="height: 12px; width: 40%"></div>
             </div>
           </div>
+
           <div class="skeleton-card">
             <div
               class="skeleton"
@@ -475,14 +566,17 @@
                 flex-shrink: 0;
               "
             ></div>
+
             <div style="flex: 1">
               <div
                 class="skeleton"
                 style="height: 14px; width: 70%; margin-bottom: 8px"
               ></div>
+
               <div class="skeleton" style="height: 12px; width: 40%"></div>
             </div>
           </div>
+
           <div class="skeleton-card">
             <div
               class="skeleton"
@@ -493,14 +587,17 @@
                 flex-shrink: 0;
               "
             ></div>
+
             <div style="flex: 1">
               <div
                 class="skeleton"
                 style="height: 14px; width: 70%; margin-bottom: 8px"
               ></div>
+
               <div class="skeleton" style="height: 12px; width: 40%"></div>
             </div>
           </div>
+
           <div class="skeleton-card">
             <div
               class="skeleton"
@@ -511,11 +608,13 @@
                 flex-shrink: 0;
               "
             ></div>
+
             <div style="flex: 1">
               <div
                 class="skeleton"
                 style="height: 14px; width: 70%; margin-bottom: 8px"
               ></div>
+
               <div class="skeleton" style="height: 12px; width: 40%"></div>
             </div>
           </div>
@@ -543,6 +642,7 @@
                 d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
               />
             </svg>
+
             Carrinho
           </div>
 
@@ -564,6 +664,7 @@
             <div class="campo-label">
               Forma de Pagamento <span class="req">*</span>
             </div>
+
             <select class="campo-select" id="formaPagamento">
               <option value="">Selecione</option>
               <option value="dinheiro">Dinheiro</option>
@@ -577,6 +678,7 @@
           <!-- cliente -->
           <div class="campo-grupo">
             <div class="campo-label">Cliente (opcional)</div>
+
             <input
               class="campo-input"
               type="text"
@@ -588,6 +690,7 @@
           <!-- observação -->
           <div class="campo-grupo">
             <div class="campo-label">Observação</div>
+
             <textarea
               class="campo-textarea"
               id="observacao"
@@ -598,12 +701,8 @@
           <!-- data da venda -->
           <div class="campo-grupo">
             <div class="campo-label">Data da Venda</div>
-            <input
-              class="campo-input"
-              type="date"
-              id="dataVenda"
-              value="<?= new Date().toISOString().split('T')[0] ?>"
-            />
+
+            <input class="campo-input" type="date" id="dataVenda" />
           </div>
 
           <button
@@ -625,10 +724,66 @@
               <circle cx="12" cy="12" r="10" />
               <path d="m9 12 2 2 4-4" />
             </svg>
+
             Finalizar Venda
           </button>
         </div>
       </div>
     </div>
+
+    <script>
+      /*
+       * Define a data atual no campo da venda.
+       * Substitui o trecho inválido:
+       * value="<?= new Date().toISOString().split('T')[0] ?>"
+       */
+      function preencherDataAtual() {
+        const campoData = document.getElementById("dataVenda");
+
+        if (campoData && !campoData.value) {
+          const agora = new Date();
+          const ano = agora.getFullYear();
+          const mes = String(agora.getMonth() + 1).padStart(2, "0");
+          const dia = String(agora.getDate()).padStart(2, "0");
+
+          campoData.value = `${ano}-${mes}-${dia}`;
+        }
+      }
+
+      /*
+       * Coloca o nome completo no atributo title.
+       * Assim, ao deixar o mouse sobre o produto, o navegador mostra
+       * o nome inteiro, mesmo quando o catálogo limita em 3 linhas.
+       */
+      function aplicarTitulosNosProdutos() {
+        document
+          .querySelectorAll(".produto-nome, .ci-nome")
+          .forEach((elemento) => {
+            const nomeCompleto = elemento.textContent.trim();
+
+            if (nomeCompleto) {
+              elemento.title = nomeCompleto;
+            }
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        preencherDataAtual();
+        aplicarTitulosNosProdutos();
+
+        /*
+         * Observa alterações porque os produtos e o carrinho normalmente
+         * são criados dinamicamente pelo JavaScript.
+         */
+        const observador = new MutationObserver(() => {
+          aplicarTitulosNosProdutos();
+        });
+
+        observador.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      });
+    </script>
   </body>
 </html>
