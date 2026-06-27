@@ -146,7 +146,7 @@ function renderCarrinho() {
   let total = 0;
   const html = carrinho
     .map((item) => {
-      const preco = parseFloat(item.produto.preco_venda ?? 0);
+      const pr = getPrecoFinal(item.produto);
       const subtotal = preco * item.qtd;
       total += subtotal;
       return `

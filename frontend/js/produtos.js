@@ -16,9 +16,10 @@ function initProdutos() {
   configurarFormularioProduto();
   iniciarTabelaProdutos();
 }
-
 function configurarFormularioProduto() {
   const form = document.getElementById("formProduto");
+
+  console.log("Form produto encontrado?", form);
 
   if (!form) {
     return;
@@ -29,6 +30,8 @@ function configurarFormularioProduto() {
 }
 
 function handleSubmitProduto(e) {
+  console.log("Submit do produto disparou");
+
   e.preventDefault();
   adicionarProduto();
 }
@@ -108,7 +111,18 @@ async function carregarProdutos() {
 }
 
 async function adicionarProduto() {
-  if (!validarCampos()) return;
+  console.log("Entrou em adicionarProduto");
+
+  if (!validarCampos()) {
+    console.warn("Parou no validarCampos()");
+    return;
+  }
+
+  console.log("Passou pela validação");
+
+  // restante da função...
+
+  const token = localStorage.getItem("token");
 
   const nome = document.getElementById("nome").value;
   const codigo = document.getElementById("codigo").value;
@@ -116,6 +130,38 @@ async function adicionarProduto() {
   const quantidade = parseInt(document.getElementById("quantidade").value);
   const preco_custo = parseFloat(document.getElementById("preco_custo").value);
   const preco_venda = parseFloat(document.getElementById("preco_venda").value);
+  const descricao = document.getElementById("descricao")?.value || "";
+
+  const precoPromocionalInput = document.getElementById("preco_promocional");
+  const promocaoAtivaInput = document.getElementById("promocao_ativa");
+
+  const promocao_ativa = promocaoAtivaInput?.value === "true";
+
+  const preco_promocional =
+    precoPromocionalInput && precoPromocionalInput.value
+      ? parseFloat(precoPromocionalInput.value)
+      : null;
+
+  if (promocao_ativa) {
+    if (!preco_promocional || preco_promocional <= 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Preço promocional inválido",
+        text: "Informe um preço promocional válido.",
+      });
+      return;
+    }
+
+    if (preco_promocional >= preco_venda) {
+      Swal.fire({
+        icon: "warning",
+        title: "Promoção inválida",
+        text: "O preço promocional precisa ser menor que o preço de venda.",
+      });
+      return;
+    }
+  }
+
   const imagemProduto = document.getElementById("imagemProduto");
 
   const formData = new FormData();
@@ -126,8 +172,14 @@ async function adicionarProduto() {
   formData.append("quantidade", quantidade);
   formData.append("preco_custo", preco_custo);
   formData.append("preco_venda", preco_venda);
+  formData.append("descricao", descricao);
 
-  // Verifica se o usuário selecionou arquivo
+  formData.append("promocao_ativa", promocao_ativa ? "true" : "false");
+
+  if (preco_promocional !== null) {
+    formData.append("preco_promocional", preco_promocional);
+  }
+
   if (imagemProduto && imagemProduto.files.length > 0) {
     formData.append("imagemProduto", imagemProduto.files[0]);
   }
@@ -142,50 +194,62 @@ async function adicionarProduto() {
   });
 
   try {
-    if (produtoEditando) {
-      // EDITAR
-      await fetch(`${API_URL}/produtos/${produtoEditando}`, {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + token, // 🔥 só isso
-        },
-        body: formData, // 🔥 aqui é o segredo
-      });
+    const url = produtoEditando
+      ? `${API_URL}/produtos/${produtoEditando}`
+      : `${API_URL}/produtos`;
 
-      produtoEditando = null;
+    const method = produtoEditando ? "PUT" : "POST";
 
-      Swal.fire({
-        icon: "success",
-        title: "Produto atualizado!",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } else {
-      await fetch(`${API_URL}/produtos`, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token, // 🔥 só isso
-        },
-        body: formData, // 🔥 aqui é o segredo
-      });
+    const response = await fetch(url, {
+      method,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      body: formData,
+    });
 
-      Swal.fire({
-        icon: "success",
-        title: "Produto adicionado!",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+    if (!response.ok) {
+      const erro = await response.json();
+      console.error("Erro backend:", erro);
+      throw new Error(erro.error || "Erro ao salvar produto.");
     }
+
+    console.log("API_URL:", API_URL);
+
+    for (let item of formData.entries()) {
+      console.log(item[0], item[1]);
+    }
+
+    if (!response.ok) {
+      let erroTexto = "Erro ao salvar produto.";
+
+      try {
+        const erro = await response.json();
+        erroTexto = erro.message || erro.error || erroTexto;
+      } catch (e) {}
+
+      throw new Error(erroTexto);
+    }
+
+    produtoEditando = null;
+
+    Swal.fire({
+      icon: "success",
+      title: method === "PUT" ? "Produto atualizado!" : "Produto adicionado!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
     limparFormulario();
     carregarProdutos();
     fecharModalProduto();
   } catch (err) {
-    console.error(err); // importante para ver o que deu errado
-    Swal.close();
+    console.error(err);
+
     Swal.fire({
       icon: "error",
       title: "Erro",
-      text: "Não foi possível adicionar o produto.",
+      text: err.message || "Não foi possível salvar o produto.",
     });
   }
 }
@@ -233,7 +297,6 @@ async function removerProduto(id) {
   }
   carregarProdutos();
 }
-
 function limparFormulario() {
   document.getElementById("nome").value = "";
   document.getElementById("codigo").value = "";
@@ -242,14 +305,30 @@ function limparFormulario() {
   document.getElementById("preco_custo").value = "";
   document.getElementById("preco_venda").value = "";
 
+  if (document.getElementById("descricao")) {
+    document.getElementById("descricao").value = "";
+  }
+
+  if (document.getElementById("preco_promocional")) {
+    document.getElementById("preco_promocional").value = "";
+  }
+
+  if (document.getElementById("promocao_ativa")) {
+    document.getElementById("promocao_ativa").value = "false";
+  }
+
   produtoEditando = null;
 }
-
 function abrirModalProduto() {
   const modal = document.getElementById("modalProduto");
   if (!modal) return;
+
   produtoEditando = null;
   document.getElementById("formProduto").reset();
+
+  document.getElementById("preco_promocional").value = "";
+  document.getElementById("promocao_ativa").value = "false";
+
   modal.style.display = "flex";
 }
 
@@ -266,6 +345,21 @@ function editarProduto(produto) {
   document.getElementById("quantidade").value = produto.quantidade;
   document.getElementById("preco_custo").value = produto.preco_custo;
   document.getElementById("preco_venda").value = produto.preco_venda;
+
+  if (document.getElementById("descricao")) {
+    document.getElementById("descricao").value = produto.descricao || "";
+  }
+
+  if (document.getElementById("preco_promocional")) {
+    document.getElementById("preco_promocional").value =
+      produto.preco_promocional || "";
+  }
+
+  if (document.getElementById("promocao_ativa")) {
+    document.getElementById("promocao_ativa").value = produto.promocao_ativa
+      ? "true"
+      : "false";
+  }
 
   produtoEditando = produto.id;
 

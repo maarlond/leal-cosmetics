@@ -24,20 +24,24 @@ app.get("/pages/verificar.html", (req, res) => {
 app.get("/catalogo/produtos", async (req, res) => {
   try {
     const result = await db.query(`
-      SELECT 
+      SELECT
         id,
         nome,
+        codigo,
         marca,
-        preco_venda,
         quantidade,
+        preco_venda,
+        preco_promocional,
+        promocao_ativa,
         imagemproduto
       FROM produtos
       WHERE quantidade > 0
+      ORDER BY id DESC
     `);
 
-    res.json(result.rows);
+    res.json(result.rows || []);
   } catch (err) {
-    console.error("Erro catálogo:", err);
+    console.error("Erro listar catálogo:", err);
     res.status(500).json({ error: err.message });
   }
 });

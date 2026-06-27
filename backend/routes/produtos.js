@@ -23,18 +23,39 @@ router.get("/produtos", verificarToken, async (req, res) => {
 // =============================
 // ➕ ADICIONAR PRODUTO
 // =============================
+// =============================
+// ➕ ADICIONAR PRODUTO
+// =============================
 router.post(
   "/produtos",
   verificarToken,
   upload.single("imagemProduto"),
   async (req, res) => {
     try {
-      const { nome, codigo, marca, quantidade, preco_custo, preco_venda } =
-        req.body;
+      console.log("BODY PRODUTO:", req.body);
+      console.log("ARQUIVO:", req.file ? req.file.originalname : "sem imagem");
+      const {
+        nome,
+        codigo,
+        marca,
+        quantidade,
+        preco_custo,
+        preco_venda,
+        descricao,
+      } = req.body;
+
+      const promocao_ativa =
+        req.body.promocao_ativa === "true" || req.body.promocao_ativa === true;
+
+      const preco_promocional =
+        req.body.preco_promocional &&
+        req.body.preco_promocional !== "null" &&
+        req.body.preco_promocional !== "undefined"
+          ? Number(req.body.preco_promocional)
+          : null;
 
       let imagemProduto = null;
 
-      // upload Cloudinary
       if (req.file) {
         const result = await new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
@@ -55,27 +76,48 @@ router.post(
 
       await db.query(
         `INSERT INTO produtos
-        (nome, codigo, marca, quantidade, preco_custo, preco_venda, imagemproduto)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [
+        (
           nome,
           codigo,
           marca,
           quantidade,
           preco_custo,
           preco_venda,
+          descricao,
+          imagemproduto,
+          promocao_ativa,
+          preco_promocional
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          nome,
+          codigo,
+          marca,
+          Number(quantidade),
+          Number(preco_custo),
+          Number(preco_venda),
+          descricao || null,
           imagemProduto,
+          promocao_ativa,
+          preco_promocional,
         ],
       );
 
       res.json({ message: "Produto cadastrado!" });
     } catch (err) {
       console.error("Erro criar produto:", err);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        error: err.message,
+        detail: err.detail,
+        code: err.code,
+      });
     }
   },
 );
 
+// =============================
+// ✏️ EDITAR PRODUTO
+// =============================
 // =============================
 // ✏️ EDITAR PRODUTO
 // =============================
@@ -87,8 +129,25 @@ router.put(
     const { id } = req.params;
 
     try {
-      const { nome, codigo, marca, quantidade, preco_custo, preco_venda } =
-        req.body;
+      const {
+        nome,
+        codigo,
+        marca,
+        quantidade,
+        preco_custo,
+        preco_venda,
+        descricao,
+      } = req.body;
+
+      const promocao_ativa =
+        req.body.promocao_ativa === "true" || req.body.promocao_ativa === true;
+
+      const preco_promocional =
+        req.body.preco_promocional &&
+        req.body.preco_promocional !== "null" &&
+        req.body.preco_promocional !== "undefined"
+          ? Number(req.body.preco_promocional)
+          : null;
 
       let imagemProduto = null;
 
@@ -117,23 +176,29 @@ router.put(
             marca = $3,
             quantidade = $4,
             preco_custo = $5,
-            preco_venda = $6
+            preco_venda = $6,
+            descricao = $7,
+            promocao_ativa = $8,
+            preco_promocional = $9
       `;
 
       const params = [
         nome,
         codigo,
         marca,
-        quantidade,
-        preco_custo,
-        preco_venda,
+        Number(quantidade),
+        Number(preco_custo),
+        Number(preco_venda),
+        descricao || null,
+        promocao_ativa,
+        preco_promocional,
       ];
 
       if (imagemProduto) {
-        query += `, imagemproduto = $7 WHERE id = $8`;
+        query += `, imagemproduto = $10 WHERE id = $11`;
         params.push(imagemProduto, id);
       } else {
-        query += ` WHERE id = $7`;
+        query += ` WHERE id = $10`;
         params.push(id);
       }
 
@@ -146,7 +211,6 @@ router.put(
     }
   },
 );
-
 // =============================
 // 🗑️ REMOVER PRODUTO
 // =============================

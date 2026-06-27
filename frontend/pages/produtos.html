@@ -585,6 +585,50 @@
       grid-template-columns: 1fr 1fr;
     }
   }
+
+  .badge-promocao {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #e11d48;
+    color: #fff;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .card-preco-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+  }
+
+  .card-preco-antigo {
+    font-size: 0.78rem;
+    color: #999;
+    text-decoration: line-through;
+    font-weight: 600;
+  }
+
+  .card-preco-promocional {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #e11d48;
+  }
+
+  .badge-promocao {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #e11d48;
+    color: #fff;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
 </style>
 
 <div class="prod-wrap">
@@ -742,6 +786,7 @@
             required
           />
         </div>
+
         <div>
           <label class="campo-label">Código</label>
           <input
@@ -751,6 +796,7 @@
             placeholder="Código"
           />
         </div>
+
         <div>
           <label class="campo-label">Marca</label>
           <select class="campo-select" id="marca">
@@ -761,6 +807,7 @@
             <option value="Outra">Outra</option>
           </select>
         </div>
+
         <div>
           <label class="campo-label"
             >Quantidade <span class="req">*</span></label
@@ -774,6 +821,7 @@
             required
           />
         </div>
+
         <div>
           <label class="campo-label"
             >Preço de Custo <span class="req">*</span></label
@@ -788,6 +836,7 @@
             required
           />
         </div>
+
         <div>
           <label class="campo-label"
             >Preço de Venda <span class="req">*</span></label
@@ -802,6 +851,29 @@
             required
           />
         </div>
+
+        <div>
+          <label class="campo-label">Preço Promocional</label>
+          <input
+            class="campo-input"
+            type="number"
+            id="preco_promocional"
+            placeholder="0,00"
+            step="0.01"
+            min="0"
+          />
+        </div>
+
+        <div>
+          <label class="campo-label">Promoção ativa?</label>
+          <select class="campo-select" id="promocao_ativa">
+            <option value="false">Não</option>
+            <option value="true">Sim</option>
+          </select>
+        </div>
+
+        <div></div>
+
         <div class="full">
           <label class="campo-label">Descrição</label>
           <input
@@ -853,27 +925,65 @@
     carregarProdutos();
   }
 
+  function toNumber(valor) {
+    if (valor === null || valor === undefined || valor === "") return 0;
+
+    if (typeof valor === "string") {
+      valor = valor.replace(",", ".");
+    }
+
+    return Number(valor) || 0;
+  }
+
+  function formatarMoeda(valor) {
+    return toNumber(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  function produtoTemPromocao(p) {
+    var precoNormal = toNumber(p.preco_venda);
+    var precoPromo = toNumber(p.preco_promocional);
+
+    var promocaoAtiva =
+      p.promocao_ativa === true || p.promocao_ativa === "true";
+
+    return promocaoAtiva && precoPromo > 0 && precoPromo < precoNormal;
+  }
+
   async function carregarProdutos() {
     try {
       var res = await fetch(API_URL + "/produtos", { headers: getHeaders() });
-      if (!res.ok) throw new Error();
+
+      if (!res.ok) {
+        throw new Error("Erro ao carregar produtos");
+      }
+
       _listaProdutos = await res.json();
+
       preencherFiltroMarcas();
       filtrarProdutos();
+
       var sub = document.getElementById("subtitleProdutos");
-      if (sub)
+      if (sub) {
         sub.textContent = _listaProdutos.length + " produto(s) cadastrado(s)";
+      }
     } catch (e) {
+      console.error("Erro ao carregar produtos:", e);
+
       var g = document.getElementById("gridProdutos");
-      if (g)
+      if (g) {
         g.innerHTML =
           '<div class="empty-state"><p>Não foi possível carregar os produtos.</p></div>';
+      }
     }
   }
 
   function preencherFiltroMarcas() {
     var sel = document.getElementById("filtroMarca");
     if (!sel) return;
+
     var marcas = [
       ...new Set(
         _listaProdutos
@@ -883,6 +993,7 @@
           .filter(Boolean),
       ),
     ];
+
     sel.innerHTML =
       '<option value="">Todas as Marcas</option>' +
       marcas
@@ -896,22 +1007,27 @@
     var busca = (document.getElementById("buscaProduto").value || "")
       .toLowerCase()
       .trim();
+
     var marca = document.getElementById("filtroMarca").value;
     var estoque = document.getElementById("filtroEstoque").value;
 
     var lista = _listaProdutos.filter(function (p) {
       var okBusca =
         !busca ||
-        p.nome.toLowerCase().includes(busca) ||
+        (p.nome || "").toLowerCase().includes(busca) ||
         (p.marca || "").toLowerCase().includes(busca) ||
         (p.codigo || "").toLowerCase().includes(busca);
+
       var okMarca = !marca || p.marca === marca;
-      var qtd = p.quantidade ?? 0;
+
+      var qtd = toNumber(p.quantidade);
+
       var okEstoque =
         !estoque ||
         (estoque === "disponivel" && qtd > 5) ||
         (estoque === "baixo" && qtd > 0 && qtd <= 5) ||
         (estoque === "esgotado" && qtd <= 0);
+
       return okBusca && okMarca && okEstoque;
     });
 
@@ -930,12 +1046,28 @@
 
     grid.innerHTML = lista
       .map(function (p) {
-        var qtd = p.quantidade ?? 0;
-        var preco = parseFloat(p.preco_venda ?? 0);
+        var qtd = toNumber(p.quantidade);
+        var precoNormal = toNumber(p.preco_venda);
+        var precoPromo = toNumber(p.preco_promocional);
+        var temPromocao = produtoTemPromocao(p);
+
         var esgot = qtd <= 0;
         var baixo = qtd > 0 && qtd <= 5;
 
-        var badge = esgot
+        var precoHtml = temPromocao
+          ? '<div class="card-preco-box">' +
+            '<span class="card-preco-antigo">De ' +
+            formatarMoeda(precoNormal) +
+            "</span>" +
+            '<span class="card-preco-promocional">Por ' +
+            formatarMoeda(precoPromo) +
+            "</span>" +
+            "</div>"
+          : '<span class="card-preco">' +
+            formatarMoeda(precoNormal) +
+            "</span>";
+
+        var badgeEstoque = esgot
           ? '<span class="badge-esgotado">Esgotado</span>'
           : baixo
             ? '<span class="badge-baixo-estoque">' + qtd + " un.</span>"
@@ -945,34 +1077,36 @@
           ? '<img src="' +
             p.imagemproduto +
             '" alt="' +
-            p.nome +
+            (p.nome || "") +
             '" onerror="this.parentElement.innerHTML=\'<div class=card-img-placeholder>💄</div>\'" />'
           : '<div class="card-img-placeholder">💄</div>';
 
         var estoqueClass = esgot ? "zero" : baixo ? "baixo" : "";
         var estoqueTexto = esgot ? "0 em estoque" : qtd + " em estoque";
+
         var prodJson = JSON.stringify(p).replace(/'/g, "\\'");
 
         return (
           '<div class="produto-card">' +
           '<div class="card-img-wrap">' +
           img +
-          badge +
+          (temPromocao && !esgot
+            ? '<span class="badge-promocao">Promoção</span>'
+            : "") +
+          badgeEstoque +
           "</div>" +
           '<div class="card-body">' +
           '<div class="card-marca">' +
           (p.marca || "") +
           "</div>" +
           '<div class="card-nome">' +
-          p.nome +
+          (p.nome || "") +
           "</div>" +
           '<div class="card-desc">' +
           (p.descricao || "") +
           "</div>" +
           '<div class="card-preco-row">' +
-          '<span class="card-preco">R$ ' +
-          preco.toFixed(2).replace(".", ",") +
-          "</span>" +
+          precoHtml +
           '<span class="card-estoque-info ' +
           estoqueClass +
           '">' +
@@ -982,7 +1116,7 @@
           "</div>" +
           '<div class="card-footer">' +
           '<button class="btn-editar-card" onclick=\'editarProduto(' +
-          JSON.stringify(p) +
+          prodJson +
           ")'>" +
           '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
           " Editar" +
@@ -1001,6 +1135,8 @@
 
   function alterarView(view) {
     var grid = document.getElementById("gridProdutos");
+    if (!grid) return;
+
     if (view === "lista") {
       grid.classList.add("lista");
       document.getElementById("btnLista").classList.add("ativo");
@@ -1014,8 +1150,24 @@
 
   function abrirModalProduto() {
     produtoEditando = null;
-    document.getElementById("formProduto").reset();
-    document.getElementById("previewImagem").style.display = "none";
+
+    var form = document.getElementById("formProduto");
+    if (form) form.reset();
+
+    if (document.getElementById("preco_promocional")) {
+      document.getElementById("preco_promocional").value = "";
+    }
+
+    if (document.getElementById("promocao_ativa")) {
+      document.getElementById("promocao_ativa").value = "false";
+    }
+
+    var preview = document.getElementById("previewImagem");
+    if (preview) {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+
     document.getElementById("modalTitulo").textContent = "Novo Produto";
     document.getElementById("modalProduto").classList.add("aberto");
   }
@@ -1031,14 +1183,33 @@
     });
 
   function editarProduto(produto) {
-    document.getElementById("nome").value = produto.nome;
+    document.getElementById("nome").value = produto.nome || "";
     document.getElementById("codigo").value = produto.codigo || "";
-    document.getElementById("marca").value = produto.marca;
-    document.getElementById("quantidade").value = produto.quantidade;
-    document.getElementById("preco_custo").value = produto.preco_custo;
-    document.getElementById("preco_venda").value = produto.preco_venda;
+    document.getElementById("marca").value = produto.marca || "Boticário";
+    document.getElementById("quantidade").value = produto.quantidade || 0;
+    document.getElementById("preco_custo").value = produto.preco_custo || "";
+    document.getElementById("preco_venda").value = produto.preco_venda || "";
+    document.getElementById("preco_promocional").value =
+      produto.preco_promocional || "";
+    document.getElementById("promocao_ativa").value =
+      produto.promocao_ativa === true || produto.promocao_ativa === "true"
+        ? "true"
+        : "false";
     document.getElementById("descricao").value = produto.descricao || "";
+
     produtoEditando = produto.id;
+
+    var preview = document.getElementById("previewImagem");
+    if (preview) {
+      if (produto.imagemproduto) {
+        preview.src = produto.imagemproduto;
+        preview.style.display = "block";
+      } else {
+        preview.src = "";
+        preview.style.display = "none";
+      }
+    }
+
     document.getElementById("modalTitulo").textContent = "Editar Produto";
     document.getElementById("modalProduto").classList.add("aberto");
   }
@@ -1046,12 +1217,19 @@
   function previewImagemModal(event) {
     var file = event.target.files[0];
     if (!file) return;
+
     var reader = new FileReader();
+
     reader.onload = function (e) {
       var img = document.getElementById("previewImagem");
       img.src = e.target.result;
       img.style.display = "block";
     };
+
     reader.readAsDataURL(file);
+  }
+
+  if (typeof initProdutos === "function") {
+    initProdutos();
   }
 </script>
